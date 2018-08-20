@@ -21,11 +21,12 @@ Imports:
   tibble (>= 1.4.2),
   tidyr (>= 0.8.1),
   utils (>= 3.5.1)
+Suggests: factorem
 Remotes: 
   bautheac/bbgsymbols,
+  bautheac/factorem,
   bautheac/fewISOs,
   bautheac/pullit
-Suggests: factorem
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
