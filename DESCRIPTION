@@ -12,7 +12,7 @@ Imports:
   fewISOs,
   lubridate (>= 1.7.4),
   magrittr (>= 1.5),
-  methods (>= 3.5.1),
+  methods (>= 3.4.0),
   pullit,
   purrr (>= 0.2.5),
   rlang (>= 0.2.1),
@@ -20,7 +20,7 @@ Imports:
   stringr (>= 1.3.1),
   tibble (>= 1.4.2),
   tidyr (>= 0.8.1),
-  utils (>= 3.5.1)
+  utils (>= 3.4.0)
 Suggests: factorem
 Remotes: 
   bautheac/bbgsymbols,
