@@ -48,5 +48,5 @@ Updates historical data for financial instruments that already exists in a \code
 \dontrun{db_update()}
 }
 \seealso{
-\code{pullit} package form the \code{finRes} suite.
+The \code{pullit} package form the \code{finRes} suite.
 }

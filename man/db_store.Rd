@@ -8,7 +8,7 @@
 db_store(object, file = NULL)
 }
 \arguments{
-\item{object}{an S4 object of class \code{BBGHitorical} from the
+\item{object}{an S4 object of class \linkS4class{BBGHistorical} from the
 \code{pullit} package.}
 
 \item{file}{a scalar character vector. Specifies the path to the

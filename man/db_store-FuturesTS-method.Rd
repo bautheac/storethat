@@ -8,7 +8,7 @@
 \S4method{db_store}{FuturesTS}(object, file = NULL)
 }
 \arguments{
-\item{object}{an S4 object of class \code{FuturesTS} from the
+\item{object}{an S4 object of class \linkS4class{FuturesTS} from the
 \code{pullit} package.}
 
 \item{file}{a scalar character vector. Specifies the path to the

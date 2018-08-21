@@ -12,10 +12,12 @@ setOldClass(c("tbl_df", "tbl", "data.frame"))
 #' Generic method for storing financial historical data retrieved from Bloomberg
 #'   via the \code{pullit} package.
 #'
-#' @param object an S4 object of class \code{BBGHitorical} from the
+#' @param object an S4 object of class \linkS4class{BBGHistorical} from the
 #'   \code{pullit} package.
 #' @param file a scalar character vector. Specifies the path to the
 #'   appropriate 'storethat.sqlite' file.
+#'
+#' @importClassesFrom pullit BBGHistorical
 #'
 #' @export
 setGeneric("db_store", function(object, file = NULL) standardGeneric("db_store"))

@@ -126,7 +126,8 @@
 #'     \itemize{
 #'       \item{ticker_id: integer. Reference to column 'id' of table 'tickers_support_futures_ts'.}
 #'       \item{date_id: integer. Reference to column 'id' of table 'support_dates'.}
-#'       \item{The other columns are Bloomberg futures market data fields listed in the 'fields' datasets of the \code{bbgsymbols} package.}
+#'       \item{The other columns are Bloomberg futures market data fields listed in the \code{\link[bbgsymbols]{fields}}
+#'         datasets of the \code{bbgsymbols} package.}
 #'     }
 #'   }
 #'   \item{data_futures_aggregate. Stores futures aggregate market historical data retrieved from Bloomberg.
@@ -134,7 +135,8 @@
 #'     \itemize{
 #'       \item{ticker_id: integer. Reference to column 'id' of table 'tickers_futures'.}
 #'       \item{date_id: integer. Reference to column 'id' of table 'support_dates'.}
-#'       \item{The other columns are Bloomberg futures aggregate data fields listed in the 'fields' datasets of the \code{bbgsymbols} package.}
+#'       \item{The other columns are Bloomberg futures aggregate data fields listed in the \code{\link[bbgsymbols]{fields}}
+#'         datasets of the \code{bbgsymbols} package.}
 #'     }
 #'   }
 #'   \item{data_equity_bs. Stores equity balance sheet historical data retrieved from Bloomberg.
@@ -142,7 +144,8 @@
 #'     \itemize{
 #'       \item{ticker_id: integer. Reference to column 'id' of table 'tickers_equity'.}
 #'       \item{date_id: integer. Reference to column 'id' of table 'support_dates'.}
-#'       \item{The other columns are Bloomberg equity balance sheet data fields listed in the 'fields' datasets of the \code{bbgsymbols} package.}
+#'       \item{The other columns are Bloomberg equity balance sheet data fields listed in the \code{\link[bbgsymbols]{fields}}
+#'         datasets of the \code{bbgsymbols} package.}
 #'     }
 #'   }
 #'   \item{data_equity_cf. Stores equity cash flow statement historical data retrieved from Bloomberg
@@ -150,7 +153,8 @@
 #'     \itemize{
 #'       \item{ticker_id: integer. Reference to column 'id' of table 'tickers_equity'.}
 #'       \item{date_id: integer. Reference to column 'id' of table 'support_dates'.}
-#'       \item{The other columns are Bloomberg equity cash flow statement data fields listed in the 'fields' datasets of the \code{bbgsymbols} package.}
+#'       \item{The other columns are Bloomberg equity cash flow statement data fields listed in the \code{\link[bbgsymbols]{fields}}
+#'         datasets of the \code{bbgsymbols} package.}
 #'     }
 #'   }
 #'   \item{data_equity_is. Stores equity income statement statement historical data retrieved from Bloomberg
@@ -158,7 +162,8 @@
 #'     \itemize{
 #'       \item{ticker_id: integer. Reference to column 'id' of table 'tickers_equity'.}
 #'       \item{date_id: integer. Reference to column 'id' of table 'support_dates'.}
-#'       \item{The other columns are Bloomberg equity income statement data fields listed in the 'fields' datasets of the \code{bbgsymbols} package.}
+#'       \item{The other columns are Bloomberg equity income statement data fields listed in the \code{\link[bbgsymbols]{fields}}
+#'         datasets of the \code{bbgsymbols} package.}
 #'     }
 #'   }
 #'   \item{data_equity_ks. Stores equity key stats historical data retrieved from Bloomberg
@@ -166,7 +171,8 @@
 #'     \itemize{
 #'       \item{ticker_id: integer. Reference to column 'id' of table 'tickers_equity'.}
 #'       \item{date_id: integer. Reference to column 'id' of table 'support_dates'.}
-#'       \item{The other columns are Bloomberg equity key stats data fields listed in the 'fields' datasets of the \code{bbgsymbols} package.}
+#'       \item{The other columns are Bloomberg equity key stats data fields listed in the \code{\link[bbgsymbols]{fields}}
+#'         datasets of the \code{bbgsymbols} package.}
 #'     }
 #'   }
 #'   \item{data_equity_market. Stores equity market historical data retrieved from Bloomberg
@@ -174,7 +180,8 @@
 #'     \itemize{
 #'       \item{ticker_id: integer. Reference to column 'id' of table 'tickers_equity'.}
 #'       \item{date_id: integer. Reference to column 'id' of table 'support_dates'.}
-#'       \item{The other columns are Bloomberg equity market data fields listed in the 'fields' datasets of the \code{bbgsymbols} package.}
+#'       \item{The other columns are Bloomberg equity market data fields listed in the \code{\link[bbgsymbols]{fields}}
+#'         datasets of the \code{bbgsymbols} package.}
 #'     }
 #'   }
 #'   \item{data_equity_ratios. Stores equity ratios historical data retrieved from Bloomberg
@@ -182,7 +189,8 @@
 #'     \itemize{
 #'       \item{ticker_id: integer. Reference to column 'id' of table 'tickers_equity'.}
 #'       \item{date_id: integer. Reference to column 'id' of table 'support_dates'.}
-#'       \item{The other columns are Bloomberg equity ratios data fields listed in the 'fields' datasets of the \code{bbgsymbols} package.}
+#'       \item{The other columns are Bloomberg equity ratios data fields listed in the \code{\link[bbgsymbols]{fields}}
+#'         datasets of the \code{bbgsymbols} package.}
 #'     }
 #'   }
 #' }
@@ -559,7 +567,7 @@ db_create <- function(path = NULL, verbose = TRUE){
 #' }
 #' @param verbose a logical scalar vector. Should progression messages be printed? Defaults to TRUE.
 #'
-#' @seealso \code{pullit} package form the \code{finRes} suite.
+#' @seealso The \code{pullit} package form the \code{finRes} suite.
 #'
 #' @examples
 #' \dontrun{db_update()}

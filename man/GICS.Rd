@@ -49,6 +49,6 @@ The Global Industry Classification Standard (GICS) system was established in 199
   new measures and standards can help investors, customers and employees manage new strategic landscapes with greater insights.
 }
 \seealso{
-\code{pullit} and \code{storethat} packages in the \code{finRes} suite.
+The \code{pullit} package in the \code{finRes} suite.
 }
 \keyword{datasets}

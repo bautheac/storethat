@@ -4,7 +4,7 @@
 
 #' Store method for S4 objects of class \linkS4class{FuturesTS}.
 #'
-#' @param object an S4 object of class \code{FuturesTS} from the
+#' @param object an S4 object of class \linkS4class{FuturesTS} from the
 #'   \code{pullit} package.
 #' @param file a scalar character vector. Specifies the path to the
 #'   appropriate 'storethat.sqlite' file.
@@ -64,7 +64,7 @@ setMethod("db_store", signature = c(object = "FuturesTS"), function(object, file
 
 #' Store method for S4 objects of class \linkS4class{FuturesAggregate}.
 #'
-#' @param object an S4 object of class \code{FuturesAggregate} from the
+#' @param object an S4 object of class \linkS4class{FuturesAggregate} from the
 #'   \code{pullit} package.
 #' @param file a scalar character vector. Specifies the path to the
 #'   appropriate 'storethat.sqlite' file.
@@ -107,7 +107,7 @@ setMethod("db_store", signature = c(object = "FuturesAggregate"), function(objec
 
 #' Store method for S4 objects of class \linkS4class{FuturesCFTC}.
 #'
-#' @param object an S4 object of class \code{FuturesCFTC} from the
+#' @param object an S4 object of class \linkS4class{FuturesCFTC} from the
 #'   \code{pullit} package.
 #' @param file a scalar character vector. Specifies the path to the
 #'   appropriate 'storethat.sqlite' file.
@@ -154,7 +154,7 @@ setMethod("db_store", signature = c(object = "FuturesCFTC"), function(object, fi
 
 #' Store method for S4 objects of class \linkS4class{BBGEquityHistorical}.
 #'
-#' @param object an S4 object of class \code{BBGEquityHistorical} from the
+#' @param object an S4 object of class \linkS4class{BBGEquityHistorical} from the
 #'   \code{pullit} package.
 #' @param file a scalar character vector. Specifies the path to the
 #'   appropriate 'storethat.sqlite' file.

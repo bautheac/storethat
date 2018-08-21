@@ -39,7 +39,7 @@
 #'
 #' @source \url{https://www.msci.com}
 #'
-#' @seealso \code{pullit} and \code{storethat} packages in the \code{finRes} suite.
+#' @seealso The \code{pullit} package in the \code{finRes} suite.
 #'
 #' @importClassesFrom data.table data.table
 #'

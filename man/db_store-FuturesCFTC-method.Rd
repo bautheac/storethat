@@ -8,7 +8,7 @@
 \S4method{db_store}{FuturesCFTC}(object, file = NULL)
 }
 \arguments{
-\item{object}{an S4 object of class \code{FuturesCFTC} from the
+\item{object}{an S4 object of class \linkS4class{FuturesCFTC} from the
 \code{pullit} package.}
 
 \item{file}{a scalar character vector. Specifies the path to the
