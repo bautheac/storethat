@@ -47,4 +47,5 @@ Gives a snapshot of the names (tickers) for which a particular \code{storethat} 
 }
 \examples{
 \dontrun{db_names()}
+
 }

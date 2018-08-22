@@ -835,6 +835,8 @@ db_update_equity_books <- function(file, book = NULL, name = NULL){
 #'
 #' @examples
 #' \dontrun{db_names()}
+#'
+#' @export
 db_names <- function(file = NULL, instrument = "all", type = "all"){
 
   if (is.null(file)) {
