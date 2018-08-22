@@ -16,7 +16,10 @@ setMethod("db_store", signature = c(object = "FuturesTS"), function(object, file
 
   data(list = c("rolls"), package = "bbgsymbols", envir = environment())
 
-  if (is.null(file)) file <- "~/storethat.sqlite"
+  if (is.null(file)) {
+    file <- file.choose()
+    if (is.null(file)) file <- "~/storethat.sqlite"
+  }
   else
     if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
@@ -74,7 +77,10 @@ setMethod("db_store", signature = c(object = "FuturesTS"), function(object, file
 #' @export
 setMethod("db_store", signature = c(object = "FuturesAggregate"), function(object, file = NULL){
 
-  if (is.null(file)) file <- "~/storethat.sqlite"
+  if (is.null(file)) {
+    file <- file.choose()
+    if (is.null(file)) file <- "~/storethat.sqlite"
+  }
   else
     if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
@@ -117,7 +123,10 @@ setMethod("db_store", signature = c(object = "FuturesAggregate"), function(objec
 #' @export
 setMethod("db_store", signature = c(object = "FuturesCFTC"), function(object, file = NULL){
 
-  if (is.null(file)) file <- "~/storethat.sqlite"
+  if (is.null(file)) {
+    file <- file.choose()
+    if (is.null(file)) file <- "~/storethat.sqlite"
+  }
   else
     if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
@@ -166,7 +175,10 @@ setMethod("db_store", signature = c(object = "BBGEquityHistorical"), function(ob
 
   data(list = c("fields"), package = "bbgsymbols", envir = environment())
 
-  if (is.null(file)) file <- "~/storethat.sqlite"
+  if (is.null(file)) {
+    file <- file.choose()
+    if (is.null(file)) file <- "~/storethat.sqlite"
+  }
   else
     if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")

@@ -4,8 +4,9 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c(".", "alphabetic", "acti
                                                         "GICS_id", "income statement", "id", "industry group id", "industry group name", "instrument", "industry id",
                                                         "industry name", "key stats", "MIC", "MIC (primary exchange)", "name", "participant", "position", "position ticker",
                                                         "roll", "rolls", "roll adjustment", "roll days", "roll months", "roll type", "roll_type_id", "sector", "sector id",
-                                                        "sector name", "security type", "subindustry", "subindustry_id", "subindustry_name", "subsector", "symbol",
-                                                        "term structure length", "ticker", "tickers_cftc", "tickers_futures", "TS position", "type", "underlying", "unit", "value"))
+                                                        "sector name", "security type", "subindustry", "subindustry_id", "subindustry id", "subindustry_name",
+                                                        "subindustry name", "subsector", "symbol", "term structure length", "ticker", "tickers_cftc", "tickers_futures",
+                                                        "TS position", "type", "underlying", "unit", "value"))
 
 setOldClass(c("tbl_df", "tbl", "data.frame"))
 

@@ -323,7 +323,7 @@ db_create <- function(path = NULL, verbose = TRUE){
   );"
   table <- dplyr::select(GICS, sector_id = `sector id`, sector_name = `sector name`, industry_group_id = `industry group id`,
                          industry_group_name = `industry group name`, industry_id = `industry id`, industry_name = `industry name`,
-                         subindustry_id, subindustry_name, description)
+                         subindustry_id = `subindustry id`, subindustry_name = `subindustry name`, description)
   RSQLite::dbExecute(con, query)
   RSQLite::dbWriteTable(con, "support_GICS", table, row.names = FALSE, overwrite = FALSE, append = TRUE)
   if (verbose) message("Built table 'support_GICS'.")
@@ -573,7 +573,10 @@ db_create <- function(path = NULL, verbose = TRUE){
 #' \dontrun{db_update()}
 db_update <- function(file = NULL, instrument = "all", type = "all", verbose = TRUE){
 
-  if (is.null(file)) file <- "~/storethat.sqlite"
+  if (is.null(file)) {
+    file <- file.choose()
+    if (is.null(file)) file <- "~/storethat.sqlite"
+    }
   else
     if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
