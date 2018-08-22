@@ -1,6 +1,6 @@
 Package: storethat
 Title: Store Bloomberg financial data for later use
-Version: 0.0.1.9000
+Version: 0.0.2.9000
 Authors@R: person("Olivier", "Bautheac", email = "o.bautheac@gmail.com", role = c("aut", "cre"))
 Description: Stores Bloomberg financial data retrieved with pullit (finRes suite). The data is stored in a SQLite
   database and a collection of helper functions provide easy and fast access to it.

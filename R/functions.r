@@ -781,3 +781,193 @@ db_update_equity_books <- function(file, book = NULL, name = NULL){
   db_store(query)
   RSQLite::dbDisconnect(con)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#' What's in that \code{storethat} SQLite database?
+#'
+#' @description Gives a snapshot of the names (tickers) for which a particular \code{storethat} SQLite database
+#'   has data records. For each name found, details the type(s) of data found as well as the corresponding period
+#'  covered.
+#'
+#' @param file a scalar chatacter vector. Specifies the path to the
+#'   appropriate 'storethat.sqlite' file.
+#' @param instrument a scalar chatacter vector. Specifies the type of financial instrument(s) to update.
+#'   One of: 'all', futures' or 'equity'. Defaults to 'all' which updates the whole database.
+#' @param type a scalar chatacter vector. Specifies the type of data to update for the selected type of
+#'   financial instrument. Intrument specific:
+#' \itemize{
+#'   \item{'futures':
+#'     \itemize{
+#'       \item{'all': updates all futures data.}
+#'       \item{'term structure'.}
+#'       \item{'aggregate.}
+#'       \item{'CFTC.}
+#'     }
+#'   }
+#'   \item{'equity':
+#'     \itemize{
+#'       \item{'all': updates all equity data.}
+#'       \item{'market'.}
+#'       \item{'key stats'.}
+#'       \item{'income statement'.}
+#'       \item{'balance sheet'.}
+#'       \item{'cash flow statement'.}
+#'       \item{'ratios'.}
+#'     }
+#'   }
+#' }
+#'
+#' @return A data.table with columns \code{ticker}, \code{instrument}, \code{data type}, \code{start} & \code{end}.
+#'
+#' @examples
+#' \dontrun{db_names()}
+db_names <- function(file = NULL, instrument = "all", type = "all"){
+
+  if (is.null(file)) {
+    file <- file.choose()
+    if (is.null(file)) file <- "~/storethat.sqlite"
+  }
+  else
+    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+      stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
+  if (! all(rlang::is_scalar_character(instrument) & instrument %in% c("all", "futures", "equity")))
+    stop("Parameter 'instrument' must be supplied as a scalar character vector: 'futures' or 'equity'.")
+  if (! all(rlang::is_scalar_character(type)))
+    stop("Parameter 'type' must be supplied as a scalar character vector")
+  if (! (instrument == "all" |
+         all(instrument == "futures" & type %in% c("all", "term structure", "aggregate", "CFTC")) |
+         all(instrument == "equity" & type %in% c("all", "market", "key stats", "income statement", "balance sheet", "cash flow statement", "ratios"))))
+    stop("Parameter 'type' must be supplied as a scalar character vector: 'all', term structure', 'aggregate', 'CFTC' (instrument = 'futures')
+         or 'all', 'market', 'key stats', 'income statement', 'balance sheet', 'cash flow statement', 'ratios' (instrument = 'equity')")
+
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+  if(instrument == "all"){
+
+    tickers <- db_get_TS_names(file) %>% dplyr::mutate(instrument = "futures", `data type` = "term structure")
+    tickers <- rbind(tickers, db_get_CFTC_names(file) %>% dplyr::mutate(instrument = "futures", `data type` = "CFTC"))
+    tickers <- rbind(tickers, db_get_all_names(file, data_table = "data_futures_aggregate", names_table = "tickers_futures") %>%
+                       dplyr::mutate(instrument = "futures", `data type` = "aggregate"))
+    tickers <- rbind(tickers, db_get_all_names(file, data_table = "data_equity_market", names_table = "tickers_equity") %>%
+                       dplyr::mutate(instrument = "equity", `data type` = "market"))
+    tickers <- rbind(tickers, db_get_all_names(file, data_table = "data_equity_bs", names_table = "tickers_equity") %>%
+                       dplyr::mutate(instrument = "equity", `data type` = "balance sheet"))
+    tickers <- rbind(tickers, db_get_all_names(file, data_table = "data_equity_cf", names_table = "tickers_equity") %>%
+                       dplyr::mutate(instrument = "equity", `data type` = "cash flow statement"))
+    tickers <- rbind(tickers, db_get_all_names(file, data_table = "data_equity_is", names_table = "tickers_equity") %>%
+                       dplyr::mutate(instrument = "equity", `data type` = "income statement"))
+    tickers <- rbind(tickers, db_get_all_names(file, data_table = "data_equity_ks", names_table = "tickers_equity") %>%
+                       dplyr::mutate(instrument = "equity", `data type` = "key stats"))
+    tickers <- rbind(tickers, db_get_all_names(file, data_table = "data_equity_ratios", names_table = "tickers_equity") %>%
+                       dplyr::mutate(instrument = "equity", `data type` = "ratios"))
+  } else {
+    switch(instrument,
+           `futures` = switch(type,
+                              all = {
+                                tickers <- db_get_TS_names(file) %>% dplyr::mutate(instrument = "futures", `data type` = "term structure")
+                                tickers <- rbind(tickers, db_get_CFTC_names(file) %>% dplyr::mutate(instrument = "futures", `data type` = "CFTC"))
+                                tickers <- rbind(tickers, db_get_all_names(file, data_table = "data_futures_aggregate", names_table = "tickers_futures") %>%
+                                                   dplyr::mutate(instrument = "futures", `data type` = "aggregate"))
+                              },
+                              `term structure` = {
+                                tickers <- db_get_TS_names(file) %>% dplyr::mutate(instrument = "futures", `data type` = "term structure")
+                              },
+                              `aggregate` = {
+                                tickers <- rbind(tickers, db_get_all_names(file, data_table = "data_futures_aggregate", names_table = "tickers_futures") %>%
+                                                   dplyr::mutate(instrument = "futures", `data type` = "aggregate"))
+                              },
+                              `CFTC` = {
+                                tickers <- rbind(tickers, db_get_CFTC_names(file) %>% dplyr::mutate(instrument = "futures", `data type` = "CFTC"))
+                              }
+           ),
+           `equity` = switch(type,
+                             all = {
+                               tickers <- lapply(c("market", "key stats", "income statement", "balance sheet", "cash flow statement", "ratios", function(x){
+                                 db_get_all_names(file,
+                                                  data_table = dplyr::case_when(x == "balance sheet" ~ "data_equity_bs", x == "cash flow statement" ~ "data_equity_cf",
+                                                                                x == "income statement" ~ "data_equity_is", x == "key stats" ~ "data_equity_ks",
+                                                                                x == "market" ~ "data_equity_market", x == "ratios" ~ "data_equity_ratios"),
+                                                  names_table = "tickers_equity") %>%
+                                   dplyr::mutate(instrument = "equity", `data type` = x)
+                                 })) %>%
+                                 data.table::rbindlist(use.names = TRUE)
+                             },
+                             `market`,
+                             `key stats`,
+                             `income statement`,
+                             `balance sheet`,
+                             `cash flow statement`,
+                             `ratios` = {
+                               tickers <- db_get_all_names(file,
+                                                data_table = dplyr::case_when(type == "balance sheet" ~ "data_equity_bs", type == "cash flow statement" ~ "data_equity_cf",
+                                                                              type == "income statement" ~ "data_equity_is", type == "key stats" ~ "data_equity_ks",
+                                                                              type == "market" ~ "data_equity_market", type == "ratios" ~ "data_equity_ratios"),
+                                                names_table = "tickers_equity") %>%
+                                 dplyr::mutate(instrument = "equity", `data type` = type)
+                             }
+           )
+    )
+  }
+  RSQLite::dbDisconnect(con); data.table::as.data.table(dplyr::select(tickers, ticker, instrument, `data type`, start, end) %>%
+                                                          dplyr::arrange(ticker, instrument, `data type`))
+}
+
+
+
+db_get_TS_names <- function(file){
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+  query <- "(SELECT active_contract_ticker_id, MIN(date_id) AS start, MAX(date_id) AS end FROM
+    (data_futures_TS A LEFT JOIN tickers_support_futures_ts B ON A.ticker_id = B.id) GROUP BY active_contract_ticker_id)"
+  query <- paste0("(SELECT symbol AS ticker, start, end FROM (", query, " C LEFT JOIN tickers_futures D ON
+                  C.active_contract_ticker_id = D.id))")
+  query <- paste0("(SELECT ticker, date AS start, end FROM (", query, " E LEFT JOIN support_dates F ON
+                  E.start = F.id))")
+  query <- paste0("SELECT ticker, start, date AS end FROM (", query, " G LEFT JOIN support_dates H ON
+                  G.end = H.id);")
+  query <- RSQLite::dbGetQuery(con, query)
+  RSQLite::dbDisconnect(con); query
+}
+
+
+db_get_CFTC_names <- function(file){
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+  query <- "(SELECT active_contract_ticker_id, MIN(date_id) AS start, MAX(date_id) AS end FROM
+    (data_futures_cftc A LEFT JOIN tickers_support_futures_cftc B ON A.ticker_id = B.id) GROUP BY active_contract_ticker_id)"
+  query <- paste0("(SELECT symbol AS ticker, start, end FROM (", query, " C LEFT JOIN tickers_futures D ON
+                  C.active_contract_ticker_id = D.id))")
+  query <- paste0("(SELECT ticker, date AS start, end FROM (", query, " E LEFT JOIN support_dates F ON
+                  E.start = F.id))")
+  query <- paste0("SELECT ticker, start, date AS end FROM (", query, " G LEFT JOIN support_dates H ON
+                  G.end = H.id);")
+  query <- RSQLite::dbGetQuery(con, query)
+  RSQLite::dbDisconnect(con); query
+}
+
+
+db_get_all_names <- function(file, data_table, names_table){
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+  query <- paste0("(SELECT symbol AS ticker, MIN(date_id) AS start, MAX(date_id) AS end
+                  FROM (", data_table, " A LEFT JOIN ", names_table, " B ON
+                  A.ticker_id = B.id)  GROUP BY ticker_id)")
+  query <- paste0("(SELECT ticker, date AS start, end FROM (", query, " C LEFT JOIN support_dates D ON
+                  C.start = D.id))")
+  query <- paste0("SELECT ticker, start, date AS end FROM (", query, " E LEFT JOIN support_dates F ON
+                  E.end = F.id);")
+  query <- RSQLite::dbGetQuery(con, query)
+  RSQLite::dbDisconnect(con); query
+}
