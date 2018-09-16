@@ -2,11 +2,11 @@ Package: storethat
 Title: Store Bloomberg financial data for later use
 Version: 0.0.2.9000
 Authors@R: person("Olivier", "Bautheac", email = "o.bautheac@gmail.com", role = c("aut", "cre"))
-Description: Stores Bloomberg financial data retrieved with pullit (finRes suite). The data is stored in a SQLite
-  database and a collection of helper functions provide easy and fast access to it.
+Description: Stores Bloomberg financial data retrieved with pullit (finRes suite) in a SQLite
+  database; a collection of helper functions provide easy and fast access.
 Depends: R (>= 3.4.0)
 Imports:
-  bbgsymbols,
+  BBGsymbols,
   data.table (>= 1.11.4),
   dplyr (>= 0.7.6),
   fewISOs,
@@ -21,11 +21,11 @@ Imports:
   tibble (>= 1.4.2),
   tidyr (>= 0.8.1),
   utils (>= 3.4.0)
-Suggests: factorem
+Suggests: finRes
 Remotes: 
-  bautheac/bbgsymbols,
-  bautheac/factorem,
+  bautheac/BBGsymbols,
   bautheac/fewISOs,
+  bautheac/finRes,
   bautheac/pullit
 License: GPL-3
 Encoding: UTF-8
