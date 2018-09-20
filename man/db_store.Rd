@@ -3,18 +3,18 @@
 \name{db_store}
 \alias{db_store}
 \title{Generic method for storing financial historical data retrieved from Bloomberg
-  via the \code{pullit} package.}
+  via the [pullit::pullit-package] package.}
 \usage{
-db_store(object, file = NULL)
+db_store(object, file = NULL, verbose = TRUE)
 }
 \arguments{
-\item{object}{an S4 object of class \linkS4class{BBGHistorical} from the
-\code{pullit} package.}
+\item{object}{an S4 object of class \linkS4class{DataHistorical} from the
+[pullit::pullit-package] package.}
 
 \item{file}{a scalar character vector. Specifies the path to the
 appropriate 'storethat.sqlite' file.}
 }
 \description{
 Generic method for storing financial historical data retrieved from Bloomberg
-  via the \code{pullit} package.
+  via the [pullit::pullit-package] package.
 }

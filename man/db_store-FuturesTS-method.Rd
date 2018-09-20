@@ -5,7 +5,7 @@
 \alias{db_store,FuturesTS-method}
 \title{Store method for S4 objects of class \linkS4class{FuturesTS}.}
 \usage{
-\S4method{db_store}{FuturesTS}(object, file = NULL)
+\S4method{db_store}{FuturesTS}(object, file = NULL, verbose = TRUE)
 }
 \arguments{
 \item{object}{an S4 object of class \linkS4class{FuturesTS} from the

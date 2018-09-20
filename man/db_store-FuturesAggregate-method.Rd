@@ -5,7 +5,8 @@
 \alias{db_store,FuturesAggregate-method}
 \title{Store method for S4 objects of class \linkS4class{FuturesAggregate}.}
 \usage{
-\S4method{db_store}{FuturesAggregate}(object, file = NULL)
+\S4method{db_store}{FuturesAggregate}(object, file = NULL,
+  verbose = TRUE)
 }
 \arguments{
 \item{object}{an S4 object of class \linkS4class{FuturesAggregate} from the

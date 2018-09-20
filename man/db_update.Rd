@@ -4,7 +4,7 @@
 \alias{db_update}
 \title{Update a \code{storethat} SQLite database with fresh up to date historical data from Bloomberg}
 \usage{
-db_update(file = NULL, instrument = "all", type = "all",
+db_update(file = NULL, instrument = "all", book = "all",
   verbose = TRUE)
 }
 \arguments{
@@ -13,6 +13,8 @@ appropriate 'storethat.sqlite' file.}
 
 \item{instrument}{a scalar chatacter vector. Specifies the type of financial instrument(s) to update.
 One of: 'all', futures' or 'equity'. Defaults to 'all' which updates the whole database.}
+
+\item{verbose}{a logical scalar vector. Should progression messages be printed? Defaults to TRUE.}
 
 \item{type}{a scalar chatacter vector. Specifies the type of data to update for the selected type of
   financial instrument. Intrument specific:
@@ -37,8 +39,6 @@ One of: 'all', futures' or 'equity'. Defaults to 'all' which updates the whole d
     }
   }
 }}
-
-\item{verbose}{a logical scalar vector. Should progression messages be printed? Defaults to TRUE.}
 }
 \description{
 Updates historical data for financial instruments that already exists in a \code{storethat}
