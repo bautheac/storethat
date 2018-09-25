@@ -1,4 +1,4 @@
-[![Travis build status](https://travis-ci.org/bautheac/strorethat.svg?branch=master)](https://travis-ci.org/bautheac/strorethat)
+[![Travis build status](https://travis-ci.org/bautheac/storethat.svg?branch=master)](https://travis-ci.org/bautheac/storethat)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/bautheac/strorethat?branch=master&svg=true)](https://ci.appveyor.com/project/bautheac/strorethat)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
