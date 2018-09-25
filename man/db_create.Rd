@@ -10,7 +10,7 @@ db_create(path = NULL, n = 10L, verbose = TRUE)
 \item{path}{A scalar chatacter vector. Specifies target directory for the database file. Defaults to home directory.}
 
 \item{n}{A scalar integer integer vector. Specifies the number of database tables for create for historical data storage.
-This is a time vs speed trade-off paramater. More tables occupy more space on disk but offer better
+This is a storage versus time trade-off paramater. More tables occupy more space on disk but offer better
 read/write performance. Defaults to 10.}
 
 \item{verbose}{A logical scalar vector. Should progression messages be printed? Defaults to TRUE.}
@@ -23,7 +23,7 @@ Creates a SQLite database bespoke to the \href{https://bautheac.github.io/finRes
 \details{
 Creates a SQLite database bespoke for use within the \href{https://bautheac.github.io/finRes/}{\pkg{finRes}}
   suite context. The database is created in the destination directory specified in \code{path}. Populate with
-  \code{\link{db_store}} and update with \code{\link{db_update}}.
+  \code{\link{db_store}}.
 }
 \examples{
 \dontrun{db_create()}

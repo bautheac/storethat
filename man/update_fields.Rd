@@ -6,6 +6,11 @@
 \usage{
 update_fields(fields, con)
 }
+\arguments{
+\item{fields}{A data.frame or childs. Existing fields in the object.}
+
+\item{con}{A connection object to the relevant database.}
+}
 \description{
 Updates 'support_fields' table with provided fields.
 }

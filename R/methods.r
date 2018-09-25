@@ -1,13 +1,13 @@
 # db_store ####
 
-## data_futures_ts ####
+## futures ####
 
-#' Store method for S4 objects of class \linkS4class{FuturesTS}.
-#'
-#' @param object an S4 object of class \linkS4class{FuturesTS} from the
-#'   \code{pullit} package.
-#' @param file a scalar character vector. Specifies the path to the
-#'   appropriate 'storethat.sqlite' file.
+### term structure ####
+
+#### Store method for S4 objects of class \linkS4class{FuturesTS}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,FuturesTS
 #'
 #' @importClassesFrom pullit FuturesTS
 #'
@@ -21,52 +21,43 @@ setMethod("db_store", signature = c(object = "FuturesTS"), function(object, file
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
 
-  if (!all_fields_exist(fields = unique(object@fields$field), con)) {
-    update_fields(fields = unique(object@fields$field), con); fields <- RSQLite::dbReadTable(con, "support_fields")
-  } else fields <- RSQLite::dbReadTable(con, "support_fields")
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT id, instrument, book, type, symbol FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND type = 'term structure';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
 
-  if (!all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)) {
+  if (! all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker),
+                          table_tickers = "tickers_futures", con))
     update_tickers(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)
-    active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
-  } else active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
+  active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
 
-  if (!all_tickers_exist(tickers = unique(object@term_structure_tickers$ticker), table_tickers = "tickers_support_futures_ts", con)) {
-    update_term_structure_tickers(tickers = object@term_structure_tickers, con)
-    term_structure_tickers <- RSQLite::dbReadTable(con, "tickers_support_futures_ts")
-  } else term_structure_tickers <- RSQLite::dbReadTable(con, "tickers_support_futures_ts")
+  if (! all_tickers_exist(tickers = unique(object@term_structure_tickers$ticker),
+                          table_tickers = "tickers_support_futures_ts", con))
+    update_term_structure_tickers(tickers = unique(object@term_structure_tickers), con)
+  term_structure_tickers <- RSQLite::dbReadTable(con, "tickers_support_futures_ts")
 
   dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",  max(object@data$date), "';")
   dates <- dplyr::semi_join(RSQLite::dbGetQuery(con, dates) %>% dplyr::mutate(date = as.Date(date)),
                             dplyr::distinct(object@data, date), by = "date") %>%
     dplyr::mutate(date = as.Date(date))
 
-  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
-
-  update_details(details = object@active_contract_tickers, table_tickers = "tickers_futures", table_details = "data_futures_details",
-                 date_id = date_id, tickers = active_contract_tickers, fields = fields, con = con)
-
   for (i in unique(dates$period)){
     update_data(data = dplyr::semi_join(object@data, dplyr::filter(dates, period == i), by = "date"),
                 table_data = paste0("data_futures_ts_", i), tickers = term_structure_tickers, fields = fields,
                 dates = dplyr::filter(dates, period == i), con = con)
-    if (verbose) message(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
-                                data.table::last(dplyr::filter(dates, period == i)$date), " done."))
+    if (verbose) done(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
+                             data.table::last(dplyr::filter(dates, period == i)$date), " done."))
   }
 
   RSQLite::dbDisconnect(con)
-  if (verbose) message("Done!")
 })
 
 
-## data_futures_aggregate ####
+### aggregate ####
 
-#' Store method for S4 objects of class \linkS4class{FuturesAggregate}.
-#'
-#' @param object an S4 object of class \linkS4class{FuturesAggregate} from the
-#'   \code{pullit} package.
-#' @param file a scalar character vector. Specifies the path to the
-#'   appropriate 'storethat.sqlite' file.
+#### Store method for S4 objects of class \linkS4class{FuturesAggregate}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,FuturesAggregate
 #'
 #' @importClassesFrom pullit FuturesAggregate
 #'
@@ -80,49 +71,39 @@ setMethod("db_store", signature = c(object = "FuturesAggregate"), function(objec
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
 
-  if (!all_fields_exist(fields = unique(object@fields$field), con)) {
-    update_fields(fields = unique(object@fields$field), con); fields <- RSQLite::dbReadTable(con, "support_fields")
-  } else fields <- RSQLite::dbReadTable(con, "support_fields")
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND type = 'aggregate';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
 
-  if (!all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)) {
+  if (!all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker),
+                         table_tickers = "tickers_futures", con))
     update_tickers(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)
-    active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
-  } else active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
+  active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
 
   dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",  max(object@data$date), "';")
   dates <- dplyr::semi_join(RSQLite::dbGetQuery(con, dates) %>% dplyr::mutate(date = as.Date(date)),
                             dplyr::distinct(object@data, date), by = "date") %>%
     dplyr::mutate(date = as.Date(date))
 
-  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
-
-  update_details(details = object@active_contract_tickers, table_tickers = "tickers_futures", table_details = "data_futures_details",
-                 date_id = date_id, tickers = active_contract_tickers, fields = fields, con = con)
-
   for (i in unique(dates$period)){
     update_data(data = dplyr::semi_join(object@data, dplyr::filter(dates, period == i), by = "date"),
                 table_data = paste0("data_futures_aggregate_", i), tickers = active_contract_tickers, fields = fields,
                 dates = dplyr::filter(dates, period == i), con = con)
-    if (verbose) message(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
+    if (verbose) done(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
                                 data.table::last(dplyr::filter(dates, period == i)$date), " done."))
 
   }
 
   RSQLite::dbDisconnect(con)
-  if (verbose) message("Done!")
 })
 
 
+### CFTC ####
 
-## data_futures_cftc ####
+#### Store method for S4 objects of class \linkS4class{FuturesCFTC}.
 
-#' Store method for S4 objects of class \linkS4class{FuturesCFTC}.
-#'
-#' @param object an S4 object of class \linkS4class{FuturesCFTC} from the
-#'   \code{pullit} package.
-#' @param file a scalar character vector. Specifies the path to the
-#'   appropriate 'storethat.sqlite' file.
+#' @rdname db_store-methods
+#' @aliases db_store,FuturesCFTC
 #'
 #' @importClassesFrom pullit FuturesCFTC
 #'
@@ -136,57 +117,91 @@ setMethod("db_store", signature = c(object = "FuturesCFTC"), function(object, fi
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
 
-  if (!all_fields_exist(fields = unique(object@fields$field), con)) {
-    update_fields(fields = unique(object@fields$field), con); fields <- RSQLite::dbReadTable(con, "support_fields")
-  } else fields <- RSQLite::dbReadTable(con, "support_fields")
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'CFTC';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
 
-  if (!all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)) {
+  if (!all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker),
+                         table_tickers = "tickers_futures", con))
     update_tickers(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)
-    active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
-  } else active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
+  active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
 
-  if (!all_tickers_exist(tickers = unique(object@fields$ticker), table_tickers = "tickers_support_futures_cftc", con)) {
-    update_cftc_tickers(tickers = object@fields, con)
-    cftc_tickers <- RSQLite::dbReadTable(con, "tickers_support_futures_cftc")
-  } else cftc_tickers <- RSQLite::dbReadTable(con, "tickers_support_futures_cftc")
+  if (!all_tickers_exist(tickers = unique(object@cftc_tickers$ticker),
+                         table_tickers = "tickers_support_futures_cftc", con))
+    update_cftc_tickers(tickers = object@cftc_tickers, con)
+  cftc_tickers <- RSQLite::dbReadTable(con, "tickers_support_futures_cftc")
 
   dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",  max(object@data$date), "';")
   dates <- dplyr::semi_join(RSQLite::dbGetQuery(con, dates) %>% dplyr::mutate(date = as.Date(date)),
                             dplyr::distinct(object@data, date), by = "date") %>%
     dplyr::mutate(date = as.Date(date))
 
-  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
-
-  update_details(details = object@active_contract_tickers, table_tickers = "tickers_futures", table_details = "data_futures_details",
-                 date_id = date_id, tickers = active_contract_tickers, fields = fields, con = con)
-
   for (i in unique(dates$period)){
-    update_data(data = dplyr::semi_join(object@data, dplyr::filter(dates, period == i), by = "date"),
-                table_data = paste0("data_futures_ts_", i), tickers = cftc_tickers, fields = fields,
-                dates = dplyr::filter(dates, period == i), con = con)
-    if (verbose) message(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
-                                data.table::last(dplyr::filter(dates, period == i)$date), " done."))
+    update_data_cftc(data = dplyr::semi_join(object@data, dplyr::filter(dates, period == i), by = "date"),
+                     table_data = paste0("data_futures_cftc_", i), tickers = cftc_tickers,
+                     dates = dplyr::filter(dates, period == i), con = con)
+    if (verbose) done(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
+                             data.table::last(dplyr::filter(dates, period == i)$date), " done."))
   }
 
   RSQLite::dbDisconnect(con)
-  if (verbose) message("Done!")
+})
+
+
+### info ####
+
+#### Store method for S4 objects of class \linkS4class{FuturesInfo}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,FuturesInfo
+#'
+#' @importClassesFrom pullit FuturesInfo
+#'
+#' @export
+setMethod("db_store", signature = c(object = "FuturesInfo"), function(object, file){
+
+  if (is.null(file)) file <- file.choose()
+  else
+    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+      stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
+
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'info';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+  if (!all_tickers_exist(tickers = unique(object@info$ticker),
+                         table_tickers = "tickers_futures", con))
+    update_tickers(tickers = unique(object@info$ticker), table_tickers = "tickers_futures", con)
+  tickers <- RSQLite::dbReadTable(con, "tickers_futures")
+
+  query <- paste0("DELETE FROM data_futures_info WHERE ticker_id IN (",
+                  paste(dplyr::filter(tickers, ticker %in% unique(object@info$ticker))$id, collapse = ", "),
+                  ");")
+  RSQLite::dbExecute(con = con, query)
+
+  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
+  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
+
+  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, field, value) %>%
+    dplyr::mutate(field = as.character(field)) %>%
+    dplyr::left_join(fields, by = c("field" = "symbol")) %>% dplyr::select(ticker_id, field_id = id, value) %>%
+    dplyr::mutate(date_id = !! date_id) %>% dplyr::select(ticker_id, field_id, date_id, value)
+
+  RSQLite::dbWriteTable(con = con, "data_futures_info", query, row.names = FALSE, overwrite = FALSE, append = TRUE)
+  RSQLite::dbDisconnect(con)
 })
 
 
 
+## equity ####
 
+### market ####
 
+#### Store method for S4 objects of class \linkS4class{EquityMarket}.
 
-
-## EquityMarket ####
-
-#' Store method for S4 objects of class \linkS4class{EquityMarket}.
-#'
-#' @param object an S4 object of class \linkS4class{EquityMarket} from the
-#'   \code{pullit} package.
-#' @param file a scalar character vector. Specifies the path to the
-#'   appropriate 'storethat.sqlite' file.
+#' @rdname db_store-methods
+#' @aliases db_store,EquityMarket
 #'
 #' @importClassesFrom pullit EquityMarket
 #'
@@ -200,47 +215,39 @@ setMethod("db_store", signature = c(object = "EquityMarket"), function(object, f
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
 
-  if (!all_fields_exist(fields = unique(object@fields$field), con = con)) {
-    update_fields(fields = unique(object@fields$field), con = con); fields <- RSQLite::dbReadTable(con, "support_fields")
-  } else fields <- RSQLite::dbReadTable(con, "support_fields")
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'equity' AND book = 'market';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
 
-  if (!all_tickers_exist(tickers = unique(object@tickers$ticker), table_tickers = "tickers_equity", con = con)) {
+  if (!all_tickers_exist(tickers = unique(object@tickers$ticker),
+                         table_tickers = "tickers_equity", con = con))
     update_tickers(tickers = unique(object@tickers$ticker), table_tickers = "tickers_equity", con = con)
-    tickers <- RSQLite::dbReadTable(con, "tickers_equity")
-  } else tickers <- RSQLite::dbReadTable(con, "tickers_equity")
+  tickers <- RSQLite::dbReadTable(con, "tickers_equity")
+
 
   dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",  max(object@data$date), "';")
   dates <- dplyr::semi_join(RSQLite::dbGetQuery(con, dates) %>% dplyr::mutate(date = as.Date(date)),
                             dplyr::distinct(object@data, date), by = "date") %>%
     dplyr::mutate(date = as.Date(date))
 
-  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
-
-  update_details(details = object@tickers, table_tickers = "tickers_equity", table_details = "data_equity_details",
-                 date_id = date_id, tickers = tickers, fields = fields, con = con)
-
   for (i in unique(dates$period)){
     update_data(data = dplyr::semi_join(object@data, dplyr::filter(dates, period == i), by = "date"),
                 table_data = paste0("data_equity_market_", i), tickers = tickers, fields = fields,
                 dates = dplyr::filter(dates, period == i), con = con)
-    if (verbose) message(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
+    if (verbose) done(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
                                 data.table::last(dplyr::filter(dates, period == i)$date), " done."))
   }
 
   RSQLite::dbDisconnect(con)
-  if (verbose) message("Done!")
 })
 
 
-## EquityBook ####
+### book ####
 
-#' Store method for S4 objects of class \linkS4class{EquityBook}.
-#'
-#' @param object an S4 object of class \linkS4class{EquityBook} from the
-#'   \code{pullit} package.
-#' @param file a scalar character vector. Specifies the path to the
-#'   appropriate 'storethat.sqlite' file.
+#### Store method for S4 objects of class \linkS4class{EquityBook}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,EquityBook
 #'
 #' @importClassesFrom pullit EquityBook
 #'
@@ -254,48 +261,90 @@ setMethod("db_store", signature = c(object = "EquityBook"), function(object, fil
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
 
-  if (!all_fields_exist(fields = unique(object@fields$field), con = con)) {
-    update_fields(fields = unique(object@fields$field), con = con); fields <- RSQLite::dbReadTable(con, "support_fields")
-  } else fields <- RSQLite::dbReadTable(con, "support_fields")
+  book <- dplyr::case_when(class(object) == "EquityKS" ~ "key stats", class(object) == "EquityBS" ~ "balance sheet",
+                           class(object) == "EquityCF" ~ "cash flow statement", class(object) == "EquityIS" ~ "income statement",
+                           class(object) == "EquityRatios" ~ "ratios")
 
-  if (!all_tickers_exist(tickers = unique(object@tickers$ticker), table_tickers = "tickers_equity", con = con)) {
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- paste0("SELECT * FROM support_fields WHERE instrument = 'equity' AND book = '", book, "';")
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+  if (!all_tickers_exist(tickers = unique(object@tickers$ticker), table_tickers = "tickers_equity", con = con))
     update_tickers(tickers = unique(object@tickers$ticker), table_tickers = "tickers_equity", con = con)
-    tickers <- RSQLite::dbReadTable(con, "tickers_equity")
-  } else tickers <- RSQLite::dbReadTable(con, "tickers_equity")
+  tickers <- RSQLite::dbReadTable(con, "tickers_equity")
 
   dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",  max(object@data$date), "';")
   dates <- dplyr::semi_join(RSQLite::dbGetQuery(con, dates) %>% dplyr::mutate(date = as.Date(date)),
                             dplyr::distinct(object@data, date), by = "date") %>%
     dplyr::mutate(date = as.Date(date))
 
-  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
-
-  update_details(details = object@tickers, table_tickers = "tickers_equity", table_details = "data_equity_details",
-                 date_id = date_id, tickers = tickers, fields = fields, con = con)
-
   for (i in unique(dates$period)){
     update_data(data = dplyr::semi_join(object@data, dplyr::filter(dates, period == i), by = "date"),
                 table_data = paste0("data_equity_book_", i), tickers = tickers, fields = fields,
                 dates = dplyr::filter(dates, period == i), con = con)
-    if (verbose) message(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
-                                data.table::last(dplyr::filter(dates, period == i)$date), " done."))
+    if (verbose) done(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
+                             data.table::last(dplyr::filter(dates, period == i)$date), " done."))
   }
 
   RSQLite::dbDisconnect(con)
-  if (verbose) message("Done!")
+})
+
+
+### info ####
+
+#### Store method for S4 objects of class \linkS4class{EquityInfo}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,EquityInfo
+#'
+#' @importClassesFrom pullit EquityInfo
+#'
+#' @export
+setMethod("db_store", signature = c(object = "EquityInfo"), function(object, file){
+
+  if (is.null(file)) file <- file.choose()
+  else
+    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+      stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
+
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'equity' AND book = 'info';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+  if (!all_tickers_exist(tickers = unique(object@info$ticker), table_tickers = "tickers_equity", con))
+    update_tickers(tickers = unique(object@info$ticker), table_tickers = "tickers_equity", con)
+  tickers <- RSQLite::dbReadTable(con, "tickers_equity")
+
+  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
+  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
+
+  query <- paste0("DELETE FROM data_equity_info WHERE ticker_id IN (",
+                  paste(dplyr::filter(tickers, ticker %in% unique(object@info$ticker))$id, collapse = ", "),
+                  ");")
+  RSQLite::dbExecute(con = con, query)
+
+  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, field, value) %>%
+    dplyr::mutate(field = as.character(field)) %>%
+    dplyr::left_join(fields, by = c("field" = "symbol")) %>% dplyr::select(ticker_id, field_id = id, value) %>%
+    dplyr::mutate(date_id = !! date_id) %>% dplyr::select(ticker_id, field_id, date_id, value)
+
+  RSQLite::dbWriteTable(con = con, "data_equity_info", query, row.names = FALSE, overwrite = FALSE, append = TRUE)
+  RSQLite::dbDisconnect(con)
 })
 
 
 
-## FundMarket ####
 
-#' Store method for S4 objects of class \linkS4class{FundMarket}.
-#'
-#' @param object an S4 object of class \linkS4class{FundMarket} from the
-#'   \code{pullit} package.
-#' @param file a scalar character vector. Specifies the path to the
-#'   appropriate 'storethat.sqlite' file.
+## fund ####
+
+### market ####
+
+#### Store method for S4 objects of class \linkS4class{FundMarket}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,FundMarket
 #'
 #' @importClassesFrom pullit FundMarket
 #'
@@ -309,34 +358,77 @@ setMethod("db_store", signature = c(object = "FundMarket"), function(object, fil
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
 
-  if (!all_fields_exist(fields = unique(object@fields$field), con = con)) {
-    update_fields(fields = unique(object@fields$field), con = con); fields <- RSQLite::dbReadTable(con, "support_fields")
-  } else fields <- RSQLite::dbReadTable(con, "support_fields")
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'fund' AND book = 'market';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
 
-  if (!all_tickers_exist(tickers = unique(object@tickers$ticker), table_tickers = "tickers_fund", con = con)) {
+
+  if (!all_tickers_exist(tickers = unique(object@tickers$ticker), table_tickers = "tickers_fund", con = con))
     update_tickers(tickers = unique(object@tickers$ticker), table_tickers = "tickers_fund", con = con)
-    tickers <- RSQLite::dbReadTable(con, "tickers_fund")
-  } else tickers <- RSQLite::dbReadTable(con, "tickers_fund")
+  tickers <- RSQLite::dbReadTable(con, "tickers_fund")
+
 
   dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",  max(object@data$date), "';")
   dates <- dplyr::semi_join(RSQLite::dbGetQuery(con, dates) %>% dplyr::mutate(date = as.Date(date)),
                             dplyr::distinct(object@data, date), by = "date") %>%
     dplyr::mutate(date = as.Date(date))
 
-  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
-
-  update_details(details = object@tickers, table_tickers = "tickers_fund", table_details = "data_fund_details",
-                 date_id = date_id, tickers = tickers, fields = fields, con = con)
-
   for (i in unique(dates$period)){
     update_data(data = dplyr::semi_join(object@data, dplyr::filter(dates, period == i), by = "date"),
                 table_data = paste0("data_fund_market_", i), tickers = tickers, fields = fields,
                 dates = dplyr::filter(dates, period == i), con = con)
-    if (verbose) message(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
+    if (verbose) done(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
                                 data.table::last(dplyr::filter(dates, period == i)$date), " done."))
   }
 
   RSQLite::dbDisconnect(con)
-  if (verbose) message("Done!")
 })
+
+
+
+### info ####
+
+#### Store method for S4 objects of class \linkS4class{FundInfo}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,FundInfo
+#'
+#' @importClassesFrom pullit FundInfo
+#'
+#' @export
+setMethod("db_store", signature = c(object = "FundInfo"), function(object, file){
+
+  if (is.null(file)) file <- file.choose()
+  else
+    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+      stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
+
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'fund' AND book = 'info';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+
+  if (!all_tickers_exist(tickers = unique(object@info$ticker), table_tickers = "tickers_fund", con))
+    update_tickers(tickers = unique(object@info$ticker), table_tickers = "tickers_fund", con)
+  tickers <- RSQLite::dbReadTable(con, "tickers_fund")
+
+
+  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
+  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
+
+  query <- paste0("DELETE FROM data_fund_info WHERE ticker_id IN (",
+                  paste(dplyr::filter(tickers, ticker %in% unique(object@info$ticker))$id, collapse = ", "),
+                  ");")
+  RSQLite::dbExecute(con = con, query)
+
+  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, field, value) %>%
+    dplyr::mutate(field = as.character(field)) %>%
+    dplyr::left_join(fields, by = c("field" = "symbol")) %>% dplyr::select(ticker_id, field_id = id, value) %>%
+    dplyr::mutate(date_id = !! date_id) %>% dplyr::select(ticker_id, field_id, date_id, value)
+
+  RSQLite::dbWriteTable(con = con, "data_fund_info", query, row.names = FALSE, overwrite = FALSE, append = TRUE)
+  RSQLite::dbDisconnect(con)
+})
+

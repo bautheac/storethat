@@ -6,6 +6,11 @@
 \usage{
 all_fields_exist(fields, con)
 }
+\arguments{
+\item{fields}{A data.frame or childs. Existing fields in the object.}
+
+\item{con}{A connection object to the relevant database.}
+}
 \description{
 Check all fields provided exist in 'support_fields' table.
 }

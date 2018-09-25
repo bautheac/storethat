@@ -6,6 +6,21 @@
 \usage{
 update_data(data, table_data, tickers, fields, dates, con)
 }
+\arguments{
+\item{data}{A data.frame or childs. Contains candidate data for \code{table_data}
+update.}
+
+\item{table_data}{A scalar character vector. Specifies the name of the table
+to udate with \code{data}.}
+
+\item{tickers}{A data.frame or childs. Tickers corresponding to \code{data}.}
+
+\item{fields}{A data.frame or childs. Fields corresponding to \code{data}.}
+
+\item{dates}{A data.frame or childs. Dates corresponding to \code{data}.}
+
+\item{con}{A connection object to the relevant database.}
+}
 \description{
 Updates the data table specified with the historical data dataset provided.
 }

@@ -6,6 +6,11 @@
 \usage{
 update_term_structure_tickers(tickers, con)
 }
+\arguments{
+\item{tickers}{A character vector. Existing tickers in the object.}
+
+\item{con}{A connection object to the relevant database.}
+}
 \description{
 Updates the 'tickers_support_futures_ts' table with provided term structure tickers.
 }

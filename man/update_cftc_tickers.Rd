@@ -2,10 +2,15 @@
 % Please edit documentation in R/support.r
 \name{update_cftc_tickers}
 \alias{update_cftc_tickers}
-\title{Updates the 'tickers_support_futures_ts' table with provided term structure tickers.}
+\title{Updates the 'update_cftc_tickers' table with provided CFTC tickers.}
 \usage{
 update_cftc_tickers(tickers, con)
 }
+\arguments{
+\item{tickers}{A character vector. Existing tickers in the object.}
+
+\item{con}{A connection object to the relevant database.}
+}
 \description{
-Updates the 'tickers_support_futures_ts' table with provided term structure tickers.
+Updates the 'update_cftc_tickers' table with provided CFTC tickers.
 }
