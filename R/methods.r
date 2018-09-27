@@ -9,14 +9,16 @@
 #' @rdname db_store-methods
 #' @aliases db_store,FuturesTS
 #'
+#'
 #' @importClassesFrom pullit FuturesTS
+#'
 #'
 #' @export
 setMethod("db_store", signature = c(object = "FuturesTS"), function(object, file, verbose){
 
   if (is.null(file)) file <- file.choose()
   else
-    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
@@ -59,14 +61,16 @@ setMethod("db_store", signature = c(object = "FuturesTS"), function(object, file
 #' @rdname db_store-methods
 #' @aliases db_store,FuturesAggregate
 #'
+#'
 #' @importClassesFrom pullit FuturesAggregate
+#'
 #'
 #' @export
 setMethod("db_store", signature = c(object = "FuturesAggregate"), function(object, file, verbose){
 
   if (is.null(file)) file <- file.choose()
   else
-    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
@@ -105,14 +109,16 @@ setMethod("db_store", signature = c(object = "FuturesAggregate"), function(objec
 #' @rdname db_store-methods
 #' @aliases db_store,FuturesCFTC
 #'
+#'
 #' @importClassesFrom pullit FuturesCFTC
+#'
 #'
 #' @export
 setMethod("db_store", signature = c(object = "FuturesCFTC"), function(object, file, verbose){
 
   if (is.null(file)) file <- file.choose()
   else
-    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
@@ -154,14 +160,16 @@ setMethod("db_store", signature = c(object = "FuturesCFTC"), function(object, fi
 #' @rdname db_store-methods
 #' @aliases db_store,FuturesInfo
 #'
+#'
 #' @importClassesFrom pullit FuturesInfo
+#'
 #'
 #' @export
 setMethod("db_store", signature = c(object = "FuturesInfo"), function(object, file){
 
   if (is.null(file)) file <- file.choose()
   else
-    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
@@ -203,14 +211,16 @@ setMethod("db_store", signature = c(object = "FuturesInfo"), function(object, fi
 #' @rdname db_store-methods
 #' @aliases db_store,EquityMarket
 #'
+#'
 #' @importClassesFrom pullit EquityMarket
+#'
 #'
 #' @export
 setMethod("db_store", signature = c(object = "EquityMarket"), function(object, file, verbose){
 
   if (is.null(file)) file <- file.choose()
   else
-    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
@@ -249,14 +259,16 @@ setMethod("db_store", signature = c(object = "EquityMarket"), function(object, f
 #' @rdname db_store-methods
 #' @aliases db_store,EquityBook
 #'
+#'
 #' @importClassesFrom pullit EquityBook
+#'
 #'
 #' @export
 setMethod("db_store", signature = c(object = "EquityBook"), function(object, file, verbose){
 
   if (is.null(file)) file <- file.choose()
   else
-    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
@@ -297,14 +309,16 @@ setMethod("db_store", signature = c(object = "EquityBook"), function(object, fil
 #' @rdname db_store-methods
 #' @aliases db_store,EquityInfo
 #'
+#'
 #' @importClassesFrom pullit EquityInfo
+#'
 #'
 #' @export
 setMethod("db_store", signature = c(object = "EquityInfo"), function(object, file){
 
   if (is.null(file)) file <- file.choose()
   else
-    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
@@ -346,14 +360,16 @@ setMethod("db_store", signature = c(object = "EquityInfo"), function(object, fil
 #' @rdname db_store-methods
 #' @aliases db_store,FundMarket
 #'
+#'
 #' @importClassesFrom pullit FundMarket
+#'
 #'
 #' @export
 setMethod("db_store", signature = c(object = "FundMarket"), function(object, file, verbose){
 
   if (is.null(file)) file <- file.choose()
   else
-    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
@@ -393,14 +409,16 @@ setMethod("db_store", signature = c(object = "FundMarket"), function(object, fil
 #' @rdname db_store-methods
 #' @aliases db_store,FundInfo
 #'
+#'
 #' @importClassesFrom pullit FundInfo
+#'
 #'
 #' @export
 setMethod("db_store", signature = c(object = "FundInfo"), function(object, file){
 
   if (is.null(file)) file <- file.choose()
   else
-    if (! all(rlang::is_scalar_character(file) & stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
       stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
 
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)

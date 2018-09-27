@@ -8,29 +8,38 @@
 #                                                         "subindustry name", "subsector", "symbol", "term structure length", "ticker", "tickers_cftc", "tickers_futures",
 #                                                         "TS position", "type", "underlying", "unit", "value"))
 
+
 setOldClass(c("tbl_df", "tbl", "data.frame"))
 
-#' Stores financial data retrieved from Bloomberg
-#'   with \href{https://github.com/bautheac/pullit/}{\pkg{pullit}}
+
+#' Stores financial data retrieved from Bloomberg with
+#'   \href{https://github.com/bautheac/pullit/}{\pkg{pullit}}
+#'
 #'
 #' @description Stores in a bespoke \href{https://github.com/bautheac/storethat/}{\pkg{storethat}}
 #'   SQLite database financial data retrieved from Bloomberg
 #'   using the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}} package
 #'   (\href{https://bautheac.github.io/finRes/}{\pkg{finRes}}) suite.
 #'
-#' @param object an S4 object of class \linkS4class{DataHistorical} or
-#'   \linkS4class{DataInfo} and respective childs.
-#' @param file a scalar character vector. Specifies the path to the
-#'   appropriate 'storethat.sqlite' file.
-#' @param verbose A logical scalar vector. Should progression messages
-#'   be printed? Defaults to TRUE.
+#'
+#' @param object an S4 object of class \linkS4class{DataHistorical} or \linkS4class{DataInfo}
+#'   and respective childs.
+#'
+#' @param file a scalar character vector. Specifies the path to the appropriate 'storethat.sqlite'
+#'   file.
+#'
+#' @param verbose A logical scalar vector. Should progression messages be printed? Defaults to TRUE.
+#'
 #'
 #' @seealso The \href{https://github.com/bautheac/pullit/}{\pkg{pullit}} package.
+#'
 #'
 #' @docType methods
 #' @rdname db_store-methods
 #'
+#'
 #' @importClassesFrom pullit DataHistorical
+#'
 #'
 #' @export
 setGeneric("db_store", function(object, file = NULL, verbose = TRUE) standardGeneric("db_store"))

@@ -1,28 +1,44 @@
-#' A bespoke SQLite database for the \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} universe
+#' A bespoke SQLite database for the \href{https://bautheac.github.io/finRes/}{\pkg{finRes}}
+#'   universe
 #'
-#' @description Creates a SQLite database bespoke to the \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} universe.
-#'   In particular, the database is designed to store Bloomberg data retireved using the
+#'
+#' @description Creates a SQLite database bespoke to the
+#'   \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} universe. In particular, the
+#'   database is designed to store Bloomberg data retireved using the
 #'   \href{https://github.com/bautheac/pullit/}{\pkg{pullit}} package.
 #'
-#' @param path A scalar chatacter vector. Specifies target directory for the database file. Defaults to home directory.
-#' @param n A scalar integer integer vector. Specifies the number of database tables for create for historical data storage.
-#'   This is a storage versus time trade-off paramater. More tables occupy more space on disk but offer better
-#'   read/write performance. Defaults to 10.
-#' @param verbose A logical scalar vector. Should progression messages be printed? Defaults to TRUE.
 #'
-#' @details Creates a SQLite database bespoke for use within the \href{https://bautheac.github.io/finRes/}{\pkg{finRes}}
-#'   suite context. The database is created in the destination directory specified in \code{path}. Populate with
-#'   \code{\link{db_store}}.
+#' @param path a scalar chatacter vector. Specifies target directory for the database file.
+#'   Defaults to home directory.
+#'
+#' @param n a scalar integer integer vector. Specifies the number of database tables for
+#'   create for historical data storage. This is a storage versus time trade-off paramater.
+#'   More tables occupy more space on disk but offer better read/write performance. Defaults to 10.
+#'
+#' @param verbose a logical scalar vector. Should progression messages be printed? Defaults to TRUE.
+#'
+#'
+#' @details Creates a SQLite database bespoke for use within the
+#'   \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} suite context. The database is created
+#'   in the destination directory specified in \code{path}. Populate with \code{\link{db_store}}.
+#'
 #'
 #' @seealso The \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} suite,
-#'   in particular the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}}, \href{https://github.com/bautheac/BBGsymbols/}{\pkg{BBGsymbols}},
-#'   \href{https://github.com/bautheac/fewISOs/}{\pkg{fewISOs}}, \href{https://github.com/bautheac/GICS/}{\pkg{GICS}} &
+#'   in particular the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}},
+#'   \href{https://github.com/bautheac/BBGsymbols/}{\pkg{BBGsymbols}},
+#'   \href{https://github.com/bautheac/fewISOs/}{\pkg{fewISOs}},
+#'   \href{https://github.com/bautheac/GICS/}{\pkg{GICS}} &
 #'   \href{https://github.com/bautheac/factorem/}{\pkg{factorem}} packages.
+#'
 #'
 #' @examples
 #' \dontrun{db_create()}
 #'
+#'
 #' @import BBGsymbols
+#'
+#'
+#' @export
 db_create <- function(path = NULL, n = 10L, verbose = TRUE){
 
   if (! rlang::is_scalar_logical(verbose)) stop("Parameter 'verbose' must be supplied as a scalar logical vector (TRUE of FALSE).")
@@ -86,7 +102,7 @@ db_create <- function(path = NULL, n = 10L, verbose = TRUE){
   ### tickers_support_futures_cftc ####
   query <- "CREATE TABLE tickers_support_futures_cftc(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  active_contract_ticker_id INTEGER UNSIGNED NOT NULL  REFERENCES tickers_futures(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  active_contract_ticker_id INTEGER UNSIGNED NOT NULL REFERENCES tickers_futures(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
   ticker VARCHAR(50) NOT NULL UNIQUE, UNIQUE (active_contract_ticker_id, ticker)
   );"
   RSQLite::dbExecute(con, query)
@@ -94,7 +110,7 @@ db_create <- function(path = NULL, n = 10L, verbose = TRUE){
   ### tickers_support_futures_ts ####
   query <- "CREATE TABLE tickers_support_futures_ts(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  active_contract_ticker_id INTEGER UNSIGNED NOT NULL  REFERENCES tickers_futures(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  active_contract_ticker_id INTEGER UNSIGNED NOT NULL REFERENCES tickers_futures(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
   ticker VARCHAR(50) NOT NULL UNIQUE, position TINYINT UNSIGNED NOT NULL,
   roll_type_symbol CHAR(1) NOT NULL REFERENCES support_futures_roll_types(symbol) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
   roll_days TINYINT UNSIGNED NOT NULL, roll_months TINYINT NOT NULL,
@@ -219,6 +235,110 @@ db_create <- function(path = NULL, n = 10L, verbose = TRUE){
 }
 
 
+
+
+
+
+
+#' Snapshot of a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
+#'   database.
+#'
+#'
+#' @description Provides a snapshot of the data stored in an existing
+#'   \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite database.
+#'
+#'
+#' @param file a scalar character vector. Specifies the path to the appropriate 'storethat.sqlite'
+#'   file.
+#'
+#' @param instrument a scalar character vector. Specifies the financial instruments to get a
+#'   snapshot for. Must be one of 'all', equity', 'fund' or 'futures'.
+#'
+#' @param book a scalar character vector. Instrument dependent; for a given instrument, specifies
+#'   the book for the snapshot; 'all' snapshots all the books available for the given instrument.
+#'
+#' @param name a scalar character vector. Instrument dependent; for a given instrument, specifies
+#'   the name for the snapshot; 'all' snapshots all the names available for the given instrument.
+#'
+#'
+#' @seealso The \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} suite,
+#'   in particular the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}} &
+#'   \href{https://github.com/bautheac/BBGsymbols/}{\pkg{BBGsymbols}} packages.
+#'
+#'
+#' @examples \dontrun{db_snapshot()}
+#'
+#'
+#' @export
+db_snapshot <- function(file = NULL, instrument = "all", book = "all", name = "all"){
+
+  if (is.null(file)) file <- file.choose()
+  else
+    if (! all(rlang::is_scalar_character(file),
+              stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+      stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite
+           database file (ie. ~/storethat.sqlite)")
+
+
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+
+  instruments <- "SELECT DISTINCT instrument FROM support_fields;"
+  instruments <- RSQLite::dbGetQuery(con = con, instruments)
+  if (! instrument %in% instruments$instrument)
+    stop("Parameter 'instrument' must be supplied as a scalar character vector; one of '",
+         paste(instruments$instrument, collapse = "', '"), "'")
+
+
+  books <- switch(instrument, all = "SELECT DISTINCT book FROM support_fields;",
+                  paste0("SELECT DISTINCT book FROM support_fields WHERE instrument = '",
+                         instrument, "';")
+  )
+  books <- RSQLite::dbGetQuery(con = con, books)
+  if (! book %in% c("all", books$book))
+    stop("Parameter 'book' must be supplied as a scalar character vector; one of '",
+         paste(c("all", books$book), collapse = "', '"), "'")
+
+
+  names <- switch(instrument,
+                  all = {
+                    lapply(instruments$instrument, function(x)
+                      RSQLite::dbGetQuery(con = con, paste0("SELECT * FROM tickers_", x, ";")) %>%
+                        dplyr::mutate(instrument = x) %>%
+                        dplyr::select(instrument, dplyr::everything())) %>%
+                      data.table::rbindlist(fill = TRUE)
+                  },
+                  RSQLite::dbGetQuery(con = con, paste0("SELECT * FROM tickers_", instrument, ";"))
+  )
+  if (! name %in% c("all", names$ticker))
+    stop("Parameter 'name' must be supplied as a scalar character vector; one of '",
+         paste(c("all", names$ticker), collapse = "', '"), "'")
+  else if (! all(instrument == "all", name == "all"))
+    dplyr::filter(names, instrument == !! instrument, ticker == !! name)
+
+
+  dates <- "SELECT * FROM support_dates;"; dates <- RSQLite::dbGetQuery(con = con, dates)
+
+
+  data <- switch(instrument,
+                 fund = db_snapshot_fund(book, names, dates, con) %>%
+                   dplyr::left_join(dplyr::select(names, ticker_id = id, ticker),
+                                    by = "ticker_id") %>%
+                   dplyr::select(ticker, field, start, end),
+                 futures = db_snapshot_futures(book, names, dates, con) %>%
+                   dplyr::left_join(dplyr::select(names, active_contract_ticker_id = id,
+                                                  `active contract ticker` = ticker),
+                                    by = "active_contract_ticker_id") %>%
+                   dplyr::select(`active contract ticker`, ticker, field, start, end),
+                 equity = db_snapshot_equity(book, names, dates, con) %>%
+                   dplyr::left_join(dplyr::select(names, ticker_id = id, ticker),
+                                    by = "ticker_id") %>%
+                   dplyr::select(ticker, field, start, end)
+                 )
+
+
+  RSQLite::dbDisconnect(con); data
+}
 
 
 
