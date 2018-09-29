@@ -226,9 +226,62 @@ update_data_cftc <- function(data, table_data, tickers, dates, con){
 
 
 
+# snapshot ####
+
+
+## equity ####
+
+db_snapshot_equity <- function(book, names, dates, con){
+
+  switch(book,
+
+         market = db_snapshot_market(instrument = "equity", names, dates, con),
+
+         info = db_snapshot_info(instrument = "equity", names, dates, con),
+
+         all = {
+
+           books <- "SELECT DISTINCT book FROM support_fields WHERE instrument = 'equity'
+           AND book NOT IN ('market', 'info');"
+           books <- RSQLite::dbGetQuery(con = con, books)$book
+
+           lapply(books, function(x) db_snapshot_book(instrument = "equity", book = x,
+                                                      names, dates, con)) %>%
+             data.table::rbindlist()
+
+         },
+
+         db_snapshot_equity_book(book, names, dates, con)
+  )
+
+}
+
+
+### book ####
+db_snapshot_equity_book <- function(book, names, dates, con){
+
+  fields <- paste0("SELECT * FROM support_fields WHERE instrument = 'equity'
+                   AND book = '", book, "';")
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+  # data <- db_snapshot_historical("data_equity_book", names, fields, dates, con)
+  data <- db_snapshot_book(instrument = "equity", book, names, dates, con)
+
+  purrr::map2(list(c("start"), c("end")),
+              dplyr::lst(min = min, max = max),
+              ~ dplyr::group_by(data, ticker_id, field) %>%
+                dplyr::summarise_at(.x, .y)) %>%
+    purrr::reduce(dplyr::inner_join, by = c("ticker_id", "field")) %>%
+    dplyr::ungroup() %>% dplyr::select(ticker_id, field, start, end)
+
+}
 
 
 
+
+
+
+## futures ####
 
 db_snapshot_futures <- function(book, names, dates, con){
 
@@ -245,7 +298,7 @@ db_snapshot_futures <- function(book, names, dates, con){
              dplyr::left_join(tickers, by = "ticker_id") %>%
              dplyr::select(active_contract_ticker_id, ticker, field, start, end)
 
-           },
+         },
 
          CFTC = {
 
@@ -294,38 +347,115 @@ db_snapshot_futures <- function(book, names, dates, con){
            plyr::rbind.fill(market, CFTC, info)
 
          }
-  )
+           )
+}
+
+
+### market ####
+
+#### term structure ####
+db_snapshot_futures_ts <- function(names, dates, con){
+
+  tickers <- paste0("SELECT * FROM tickers_support_futures_ts WHERE active_contract_ticker_id
+                    IN (",
+                    paste(unique(names$id), collapse = ", "), ");")
+  tickers <- RSQLite::dbGetQuery(con = con, tickers)
+
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND
+  type = 'term structure';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+  data <- db_snapshot_historical("data_futures_ts", tickers, fields, dates, con)
+
+  purrr::map2(list(c("start"), c("end")),
+              dplyr::lst(min = min, max = max),
+              ~ dplyr::group_by(data, ticker_id, field_id) %>%
+                dplyr::summarise_at(.x, .y)) %>%
+    purrr::reduce(dplyr::inner_join, by = c("ticker_id", "field_id")) %>%
+    dplyr::ungroup() %>%
+    dplyr::left_join(dplyr::select(tickers, id, active_contract_ticker_id),
+                     by = c("ticker_id" = "id")) %>%
+    dplyr::left_join(dplyr::select(fields, field_id = id, symbol), by = "field_id") %>%
+    dplyr::select(active_contract_ticker_id, ticker_id, field = symbol, start, end) %>%
+    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("start" = "date_id")) %>%
+    dplyr::select(active_contract_ticker_id, ticker_id, field, start = date, end) %>%
+    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("end" = "date_id")) %>%
+    dplyr::select(active_contract_ticker_id, ticker_id, field, start, end = date)
+
+}
+
+#### aggregate ####
+db_snapshot_futures_aggregate <- function(names, dates, con){
+
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND
+  type = 'aggregate';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+  data <- db_snapshot_historical("data_futures_aggregate", names, fields, dates, con)
+
+  purrr::map2(list(c("start"), c("end")),
+              dplyr::lst(min = min, max = max),
+              ~ dplyr::group_by(data, ticker_id, field_id) %>%
+                dplyr::summarise_at(.x, .y)) %>%
+    purrr::reduce(dplyr::inner_join, by = c("ticker_id", "field_id")) %>%
+    dplyr::ungroup() %>%
+    dplyr::left_join(dplyr::select(fields, field_id = id, symbol), by = "field_id") %>%
+    dplyr::select(active_contract_ticker_id = ticker_id, field = symbol, start, end) %>%
+    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("start" = "date_id")) %>%
+    dplyr::select(active_contract_ticker_id, field, start = date, end) %>%
+    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("end" = "date_id")) %>%
+    dplyr::select(active_contract_ticker_id, field, start, end = date)
+
+}
+
+
+### CFTC ####
+db_snapshot_futures_cftc <- function(names, dates, con){
+
+
+  tickers <- paste0("SELECT * FROM tickers_support_futures_cftc WHERE active_contract_ticker_id
+                    IN (", paste(unique(names$id), collapse = ", "), ");")
+  tickers <- RSQLite::dbGetQuery(con = con, tickers)
+
+
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'CFTC';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+
+  data <-   lapply(unique(dates$period), function(i){
+    query <- paste0("SELECT ticker_id, MIN(date_id) AS start, MAX(date_id) AS end FROM
+                    data_futures_cftc_", i, " WHERE ticker_id IN (", paste(tickers$id, collapse = ", ")
+                    , ") GROUP BY ticker_id;")
+    RSQLite::dbGetQuery(con = con, query)
+  }) %>% data.table::rbindlist() %>%
+    dplyr::mutate(field_id = fields$id)
+
+
+  purrr::map2(list(c("start"), c("end")),
+              dplyr::lst(min = min, max = max),
+              ~ dplyr::group_by(data, ticker_id, field_id) %>%
+                dplyr::summarise_at(.x, .y)) %>%
+    purrr::reduce(dplyr::inner_join, by = c("ticker_id", "field_id")) %>%
+    dplyr::ungroup() %>%
+    dplyr::left_join(dplyr::select(tickers, id, active_contract_ticker_id),
+                     by = c("ticker_id" = "id")) %>%
+    dplyr::left_join(dplyr::select(fields, field_id = id, symbol), by = "field_id") %>%
+    dplyr::select(active_contract_ticker_id, ticker_id, field = symbol, start, end) %>%
+    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("start" = "date_id")) %>%
+    dplyr::select(active_contract_ticker_id, ticker_id, field, start = date, end) %>%
+    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("end" = "date_id")) %>%
+    dplyr::select(active_contract_ticker_id, ticker_id, field, start, end = date)
+
 }
 
 
 
 
-db_snapshot_equity <- function(book, names, dates, con){
-
-  switch(book,
-
-         market = db_snapshot_market(instrument = "equity", names, dates, con),
-
-         info = db_snapshot_info(instrument = "equity", names, dates, con),
-
-         all = {
-
-           books <- "SELECT DISTINCT book FROM support_fields WHERE instrument = 'equity'
-           AND book NOT IN ('market', 'info');"
-           books <- RSQLite::dbGetQuery(con = con, books)$book
-
-           lapply(books, function(x) db_snapshot_book(instrument = "equity", book = x,
-                                                      names, dates, con)) %>%
-             data.table::rbindlist()
-
-         },
-
-         db_snapshot_equity_book(book, names, dates, con)
-  )
-
-}
 
 
+
+
+## fund ####
 
 db_snapshot_fund <- function(book, names, dates, con){
 
@@ -344,8 +474,23 @@ db_snapshot_fund <- function(book, names, dates, con){
 
 
 
+## global ####
+
+### historical ####
+db_snapshot_historical <- function(table, names, fields, dates, con){
+
+  lapply(unique(dates$period), function(i){
+    query <- paste0("SELECT ticker_id, field_id, MIN(date_id) AS start, MAX(date_id) AS end FROM
+                    ", table, "_", i, " WHERE ticker_id IN (", paste(names$id, collapse = ", ")
+                    , ") AND field_id IN (", paste(fields$id, collapse = ", ")
+                    , ") GROUP BY ticker_id, field_id;")
+    RSQLite::dbGetQuery(con = con, query)
+  }) %>% data.table::rbindlist()
+
+}
 
 
+#### market ####
 db_snapshot_market <- function(instrument, names, dates, con){
 
 
@@ -389,6 +534,7 @@ db_snapshot_market <- function(instrument, names, dates, con){
 
 
 
+#### book ####
 db_snapshot_book <- function(instrument, book, names, dates, con){
 
   fields <- paste0("SELECT * FROM support_fields WHERE instrument = '",
@@ -415,6 +561,7 @@ db_snapshot_book <- function(instrument, book, names, dates, con){
 
 
 
+### info ####
 
 db_snapshot_info <- function(instrument, names, dates, con){
 
@@ -440,110 +587,39 @@ db_snapshot_info <- function(instrument, names, dates, con){
 
 
 
-db_snapshot_historical <- function(table, names, fields, dates, con){
-
-  lapply(unique(dates$period), function(i){
-    query <- paste0("SELECT ticker_id, field_id, MIN(date_id) AS start, MAX(date_id) AS end FROM
-                    ", table, "_", i, " WHERE ticker_id IN (", paste(names$id, collapse = ", ")
-                    , ") AND field_id IN (", paste(fields$id, collapse = ", ")
-                    , ") GROUP BY ticker_id, field_id;")
-    RSQLite::dbGetQuery(con = con, query)
-  }) %>% data.table::rbindlist()
-
-}
 
 
 
 
 
-db_snapshot_futures_ts <- function(names, dates, con){
-
-  tickers <- paste0("SELECT * FROM tickers_support_futures_ts WHERE active_contract_ticker_id
-                    IN (",
-                    paste(unique(names$id), collapse = ", "), ");")
-  tickers <- RSQLite::dbGetQuery(con = con, tickers)
-
-  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND
-  type = 'term structure';"
-  fields <- RSQLite::dbGetQuery(con = con, fields)
-
-  data <- db_snapshot_historical("data_futures_ts", tickers, fields, dates, con)
-
-  purrr::map2(list(c("start"), c("end")),
-              dplyr::lst(min = min, max = max),
-              ~ dplyr::group_by(data, ticker_id, field_id) %>%
-                dplyr::summarise_at(.x, .y)) %>%
-    purrr::reduce(dplyr::inner_join, by = c("ticker_id", "field_id")) %>%
-    dplyr::ungroup() %>%
-    dplyr::left_join(dplyr::select(tickers, id, active_contract_ticker_id),
-                     by = c("ticker_id" = "id")) %>%
-    dplyr::left_join(dplyr::select(fields, field_id = id, symbol), by = "field_id") %>%
-    dplyr::select(active_contract_ticker_id, ticker_id, field = symbol, start, end) %>%
-    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("start" = "date_id")) %>%
-    dplyr::select(active_contract_ticker_id, ticker_id, field, start = date, end) %>%
-    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("end" = "date_id")) %>%
-    dplyr::select(active_contract_ticker_id, ticker_id, field, start, end = date)
-
-}
-
-
-
-db_snapshot_futures_aggregate <- function(names, dates, con){
-
-  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND
-  type = 'aggregate';"
-  fields <- RSQLite::dbGetQuery(con = con, fields)
-
-  data <- db_snapshot_historical("data_futures_aggregate", names, fields, dates, con)
-
-  purrr::map2(list(c("start"), c("end")),
-              dplyr::lst(min = min, max = max),
-              ~ dplyr::group_by(data, ticker_id, field_id) %>%
-                dplyr::summarise_at(.x, .y)) %>%
-    purrr::reduce(dplyr::inner_join, by = c("ticker_id", "field_id")) %>%
-    dplyr::ungroup() %>%
-    dplyr::left_join(dplyr::select(fields, field_id = id, symbol), by = "field_id") %>%
-    dplyr::select(active_contract_ticker_id = ticker_id, field = symbol, start, end) %>%
-    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("start" = "date_id")) %>%
-    dplyr::select(active_contract_ticker_id, field, start = date, end) %>%
-    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("end" = "date_id")) %>%
-    dplyr::select(active_contract_ticker_id, field, start, end = date)
-
-}
 
 
 
 
-db_snapshot_futures_cftc <- function(names, dates, con){
 
 
-  tickers <- paste0("SELECT * FROM tickers_support_futures_cftc WHERE active_contract_ticker_id
-                    IN (", paste(unique(names$id), collapse = ", "), ");")
-  tickers <- RSQLite::dbGetQuery(con = con, tickers)
+# delete ####
 
 
-  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'CFTC';"
-  fields <- RSQLite::dbGetQuery(con = con, fields)
+## equity ####
+
+db_delete_data_equity <- function(book, names, con){
+
+  switch(book,
+
+         all = {
+
+           books <- "SELECT DISTINCT book FROM support_fields WHERE instrument = 'equity'
+           AND book NOT IN ('market', 'info');"
+           books <- RSQLite::dbGetQuery(con = con, books)$book
+
+           lapply(books, function(x) {
 
 
-  data <-   lapply(unique(dates$period), function(i){
-    query <- paste0("SELECT ticker_id, MIN(date_id) AS start, MAX(date_id) AS end FROM
-                    data_futures_cftc_", i, " WHERE ticker_id IN (", paste(tickers$id, collapse = ", ")
-                    , ") GROUP BY ticker_id;")
-    RSQLite::dbGetQuery(con = con, query)
-  }) %>% data.table::rbindlist() %>%
-    dplyr::mutate(field_id = fields$id)
 
-
-  purrr::map2(list(c("start"), c("end")),
-              dplyr::lst(min = min, max = max),
-              ~ dplyr::group_by(data, ticker_id, field_id) %>%
-                dplyr::summarise_at(.x, .y)) %>%
-    purrr::reduce(dplyr::inner_join, by = c("ticker_id", "field_id")) %>%
-    dplyr::ungroup() %>%
-    dplyr::left_join(dplyr::select(tickers, id, active_contract_ticker_id),
-                     by = c("ticker_id" = "id")) %>%
-    dplyr::select(active_contract_ticker_id, ticker_id, field_id, start, end)
+           })
+         }
+  )
 
 }
 
@@ -551,23 +627,73 @@ db_snapshot_futures_cftc <- function(names, dates, con){
 
 
 
-db_snapshot_equity_book <- function(book, names, dates, con){
 
-  fields <- paste0("SELECT * FROM support_fields WHERE instrument = 'equity'
-                   AND book = '", book, "';")
-  fields <- RSQLite::dbGetQuery(con = con, fields)
 
-  data <- db_snapshot_historical("data_equity_book", names, fields, dates, con)
 
-  purrr::map2(list(c("start"), c("end")),
-              dplyr::lst(min = min, max = max),
-              ~ dplyr::group_by(data, ticker_id, field_id) %>%
-                dplyr::summarise_at(.x, .y)) %>%
-    purrr::reduce(dplyr::inner_join, by = c("ticker_id", "field_id")) %>%
-    dplyr::ungroup() %>%
-    dplyr::select(ticker_id, field_id, start, end)
 
+## global ####
+
+#### book ####
+db_delete_data_book <- function(instrument, book, names, con){
+
+
+  switch(book,
+
+         all = {
+
+           books <- paste0("SELECT DISTINCT book FROM support_fields WHERE
+                           instrument = '", instrument, "';")
+           books <- RSQLite::dbGetQuery(con = con, books)$book
+
+           for (x in books) {
+
+             fields <- paste0("SELECT * FROM support_fields WHERE instrument = '",
+                              instrument, "' AND book = '", x, "';")
+             fields <- RSQLite::dbGetQuery(con = con, fields)
+
+
+             for (y in grep(pattern = paste0("data_", instrument, "_book"),
+                            x = RSQLite::dbListTables(con), value = TRUE)){
+
+               query <- paste0("DELETE FROM ", y, " WHERE ticker_id IN (",
+                               paste(names$id, collapse = ", "), ") AND
+                               field_id IN (",
+                               paste(fields$id, collapse = ", "), ");")
+               RSQLite::dbExecute(con, query)
+
+             }
+           }
+         },
+         {
+
+
+           fields <- paste0("SELECT * FROM support_fields WHERE instrument = '",
+                            instrument, "' AND book = '", book, "';")
+           fields <- RSQLite::dbGetQuery(con = con, fields)
+
+
+           for (x in grep(pattern = paste0("data_", instrument, "_book"),
+                          x = RSQLite::dbListTables(con), value = TRUE)){
+
+             query <- paste0("DELETE FROM ", x, " WHERE ticker_id IN (",
+                             paste(names$id, collapse = ", "), ") AND
+                             field_id IN (",
+                             paste(fields$id, collapse = ", "), ");")
+             RSQLite::dbExecute(con, query)
+
+           }
+         }
+  )
 }
+
+
+### info ####
+
+
+
+
+
+
 
 
 

@@ -269,8 +269,11 @@ db_create <- function(path = NULL, n = 10L, verbose = TRUE){
 #' @examples \dontrun{db_snapshot()}
 #'
 #'
+#' @importFrom magrittr "%<>%"
+#'
+#'
 #' @export
-db_snapshot <- function(file = NULL, instrument = "all", book = "all", name = "all"){
+db_snapshot <- function(file = NULL, instrument, book = "all", name = "all"){
 
   if (is.null(file)) file <- file.choose()
   else
@@ -308,32 +311,40 @@ db_snapshot <- function(file = NULL, instrument = "all", book = "all", name = "a
                         dplyr::select(instrument, dplyr::everything())) %>%
                       data.table::rbindlist(fill = TRUE)
                   },
-                  RSQLite::dbGetQuery(con = con, paste0("SELECT * FROM tickers_", instrument, ";"))
+                  RSQLite::dbGetQuery(con = con, paste0("SELECT * FROM tickers_", instrument, ";"))%>%
+                    dplyr::mutate(instrument = !! instrument) %>%
+                    dplyr::select(instrument, dplyr::everything())
   )
   if (! name %in% c("all", names$ticker))
     stop("Parameter 'name' must be supplied as a scalar character vector; one of '",
          paste(c("all", names$ticker), collapse = "', '"), "'")
-  else if (! all(instrument == "all", name == "all"))
-    dplyr::filter(names, instrument == !! instrument, ticker == !! name)
+  if (name != "all") names %<>% dplyr::filter(ticker == !! name)
 
 
   dates <- "SELECT * FROM support_dates;"; dates <- RSQLite::dbGetQuery(con = con, dates)
 
 
   data <- switch(instrument,
-                 fund = db_snapshot_fund(book, names, dates, con) %>%
+
+                 fund = db_snapshot_fund(book, dplyr::filter(names, instrument == !! instrument) %>%
+                                           dplyr::select(-instrument), dates, con) %>%
                    dplyr::left_join(dplyr::select(names, ticker_id = id, ticker),
                                     by = "ticker_id") %>%
                    dplyr::select(ticker, field, start, end),
-                 futures = db_snapshot_futures(book, names, dates, con) %>%
+
+                 futures = db_snapshot_futures(book, dplyr::filter(names, instrument == !! instrument) %>%
+                                                 dplyr::select(-instrument), dates, con) %>%
                    dplyr::left_join(dplyr::select(names, active_contract_ticker_id = id,
                                                   `active contract ticker` = ticker),
                                     by = "active_contract_ticker_id") %>%
                    dplyr::select(`active contract ticker`, ticker, field, start, end),
-                 equity = db_snapshot_equity(book, names, dates, con) %>%
+
+                 equity = db_snapshot_equity(book, dplyr::filter(names, instrument == !! instrument) %>%
+                                               dplyr::select(-instrument), dates, con) %>%
                    dplyr::left_join(dplyr::select(names, ticker_id = id, ticker),
                                     by = "ticker_id") %>%
                    dplyr::select(ticker, field, start, end)
+
                  )
 
 
@@ -347,6 +358,103 @@ db_snapshot <- function(file = NULL, instrument = "all", book = "all", name = "a
 
 
 
+#' Delete data from a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
+#'   database.
+#'
+#'
+#' @description Deletes all or some of the data content of a
+#'   \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite database.
+#'
+#'
+#' @param file a scalar character vector. Specifies the path to the appropriate 'storethat.sqlite'
+#'   file.
+#'
+#' @param instrument a scalar character vector. Specifies the financial instruments to get a
+#'   snapshot for. Must be one of 'all', equity', 'fund' or 'futures'.
+#'
+#' @param book a scalar character vector. Instrument dependent; for a given instrument, specifies
+#'   the book for the snapshot; 'all' deletes all data for a given instrument.
+#'
+#' @param name a scalar character vector. Instrument dependent; for a given instrument, specifies
+#'   the name for the snapshot; 'all' deletes all data for a given instrument and book.
+#'
+#'
+#' @seealso The \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} suite,
+#'   in particular the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}} &
+#'   \href{https://github.com/bautheac/BBGsymbols/}{\pkg{BBGsymbols}} packages.
+#'
+#'
+#' @examples \dontrun{db_delete_data()}
+#'
+#'
+#' @importFrom magrittr "%<>%"
+#'
+#'
+#' @export
+db_delete_data <- function(file = NULL, instrument = "all", book = "all", name = "all"){
+
+  if (is.null(file)) file <- file.choose()
+  else
+    if (! all(rlang::is_scalar_character(file),
+              stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+      stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite
+           database file (ie. ~/storethat.sqlite)")
+
+
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+
+  instruments <- "SELECT DISTINCT instrument FROM support_fields;"
+  instruments <- RSQLite::dbGetQuery(con = con, instruments)
+  if (! instrument %in% instruments$instrument)
+    stop("Parameter 'instrument' must be supplied as a scalar character vector; one of '",
+         paste(instruments$instrument, collapse = "', '"), "'")
+
+
+  books <- switch(instrument, all = "SELECT DISTINCT book FROM support_fields;",
+                  paste0("SELECT DISTINCT book FROM support_fields WHERE instrument = '",
+                         instrument, "';")
+  )
+  books <- RSQLite::dbGetQuery(con = con, books)
+  if (! book %in% c("all", books$book))
+    stop("Parameter 'book' must be supplied as a scalar character vector; one of '",
+         paste(c("all", books$book), collapse = "', '"), "'")
+
+
+  names <- switch(instrument,
+                  all = {
+                    lapply(instruments$instrument, function(x)
+                      RSQLite::dbGetQuery(con = con, paste0("SELECT * FROM tickers_", x, ";")) %>%
+                        dplyr::mutate(instrument = x) %>%
+                        dplyr::select(instrument, dplyr::everything())) %>%
+                      data.table::rbindlist(fill = TRUE)
+                  },
+                  RSQLite::dbGetQuery(con = con, paste0("SELECT * FROM tickers_", instrument, ";"))%>%
+                    dplyr::mutate(instrument = !! instrument) %>%
+                    dplyr::select(instrument, dplyr::everything())
+  )
+  if (! name %in% c("all", names$ticker))
+    stop("Parameter 'name' must be supplied as a scalar character vector; one of '",
+         paste(c("all", names$ticker), collapse = "', '"), "'")
+  if (name != "all") names %<>% dplyr::filter(ticker == !! name)
+
+
+  switch(instrument,
+
+         all = {
+
+           for (x in c("equity", "fund", "futures"))
+             db_delete_data_book(instrument = x, book, names, con)
+
+         },
+
+         db_delete_data_book(instrument, book, names, con)
+
+  )
+
+
+  RSQLite::dbDisconnect(con)
+}
 
 
 
