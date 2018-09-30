@@ -23,13 +23,17 @@ library(finRes)
 
 db_create()
 
-term_structure <- BBG_futures_market(type = 'term structure', active_contract_tickers = c("W A Comdty", "KWA Comdty"), 
-  start = "2000-01-01", end = as.character(Sys.Date()), TS_positions = 1L:5L, 
+term_structure <- BBG_futures_market(type = 'term structure', 
+  active_contract_tickers = c("W A Comdty", "KWA Comdty"), 
+  start = "2000-01-01", end = as.character(Sys.Date()), 
+  TS_positions = 1L:5L, 
   roll_type = "A", roll_days = 0L, roll_months = 0L, roll_adjustment = "N")
 
 db_store(term_structure)
 
-term_structure <- storethat_futures_market(type = 'term structure', active_contract_tickers = c("W A Comdty", "KWA Comdty"), 
-  start = "2000-01-01", end = as.character(Sys.Date()), TS_positions = 1L:5L, 
+term_structure <- storethat_futures_market(type = 'term structure', 
+  active_contract_tickers = c("W A Comdty", "KWA Comdty"), 
+  start = "2000-01-01", end = as.character(Sys.Date()), 
+  TS_positions = 1L:5L, 
   roll_type = "A", roll_days = 0L, roll_months = 0L, roll_adjustment = "N")
 ```
