@@ -1,4 +1,4 @@
-#' A bespoke SQLite database for the \href{https://bautheac.github.io/finRes/}{\pkg{finRes}}
+#' Creates a bespoke SQLite database for the \href{https://bautheac.github.io/finRes/}{\pkg{finRes}}
 #'   universe
 #'
 #'
@@ -240,7 +240,7 @@ db_create <- function(path = NULL, n = 10L, verbose = TRUE){
 
 
 
-#' Snapshot of a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
+#' Snapshots the content of a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
 #'   database.
 #'
 #'
@@ -358,7 +358,7 @@ db_snapshot <- function(file = NULL, instrument, book = "all", name = "all"){
 
 
 
-#' Delete data from a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
+#' Deletes data from a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
 #'   database.
 #'
 #'

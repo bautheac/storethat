@@ -1,39 +1,27 @@
-[![Travis build status](https://travis-ci.org/bautheac/storethat.svg?branch=master)](https://travis-ci.org/bautheac/storethat)
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/bautheac/strorethat?branch=master&svg=true)](https://ci.appveyor.com/project/bautheac/strorethat)
+storethat
+================
+
+[![Travis-CI Build
+Status](https://travis-ci.org/bautheac/storethat.svg?branch=master)](https://travis-ci.org/bautheac/storethat)
+[![AppVeyor Build
+Status](https://ci.appveyor.com/api/projects/status/github/bautheac/storethat?branch=master&svg=true)](https://ci.appveyor.com/project/bautheac/storethat)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
-# storethat
+<style> body {text-align: justify} </style>
 
-Store Bloomberg financial data for later use, in particular within the [finRes](https://bautheac.github.io/finRes/) context.
+## storethat
 
-## Installation
-
-Install the development version from [github](https://github.com/bautheac/storethat/) with:
-
-``` r
-devtools::install_github(repo = "storethat", username = "bautheac")
-```
-
-## Example
-
-Create database, pull futures term structure market data from Bloomberg with pullit, store the latter in the former, retrieve.
-
-``` r
-library(finRes)
-
-db_create()
-
-term_structure <- BBG_futures_market(type = 'term structure', 
-  active_contract_tickers = c("W A Comdty", "KWA Comdty"), 
-  start = "2000-01-01", end = as.character(Sys.Date()), 
-  TS_positions = 1L:5L, 
-  roll_type = "A", roll_days = 0L, roll_months = 0L, roll_adjustment = "N")
-
-db_store(term_structure)
-
-term_structure <- storethat_futures_market(type = 'term structure', 
-  active_contract_tickers = c("W A Comdty", "KWA Comdty"), 
-  start = "2000-01-01", end = as.character(Sys.Date()), 
-  TS_positions = 1L:5L, 
-  roll_type = "A", roll_days = 0L, roll_months = 0L, roll_adjustment = "N")
-```
+storethat is one of the workhorses of the
+[finRes](https://bautheac.github.io/finRes/) suite where it plays the
+important role of providing off-Bloomberg storage solutions for
+financial data retireved from Bloomberg using the
+[pullit](https://bautheac.github.io/pullit/) package.
+[storethat](https://bautheac.github.io/storethat/) and
+[pullit](https://bautheac.github.io/pullit/) work in conjuction with the
+[BBGsymbols](https://bautheac.github.io/BBGsymbols/) package that
+provides carefully selected Bloomberg datafields for pullit to query
+data for and for storethat to store the corresponding retrieved data.
+Both packages are flexible to BBGsymbols content dynamics in that
+enhancing BBGsymbols with new datafield(s) won’t alter data queries in
+pullit nor storethat storage facilities with any existing database
+eventually upgrading for the new field(s) on first encounter.

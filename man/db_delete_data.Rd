@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.r
 \name{db_delete_data}
 \alias{db_delete_data}
-\title{Delete data from a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
+\title{Deletes data from a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
   database.}
 \usage{
 db_delete_data(file = NULL, instrument = "all", book = "all",

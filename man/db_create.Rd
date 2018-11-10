@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.r
 \name{db_create}
 \alias{db_create}
-\title{A bespoke SQLite database for the \href{https://bautheac.github.io/finRes/}{\pkg{finRes}}
+\title{Creates a bespoke SQLite database for the \href{https://bautheac.github.io/finRes/}{\pkg{finRes}}
   universe}
 \usage{
 db_create(path = NULL, n = 10L, verbose = TRUE)

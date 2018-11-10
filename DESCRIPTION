@@ -1,7 +1,7 @@
 Package: storethat
 Title: Store Bloomberg financial data for later use
-Version: 0.0.2.9000
-Authors@R: person("Olivier", "Bautheac", email = "o.bautheac@gmail.com", role = c("aut", "cre"))
+Version: 0.0.2.0
+Authors@R: person("Olivier", "Bauthéac", email = "o.bautheac@gmail.com", role = c("aut", "cre"))
 Description: Stores Bloomberg financial data retrieved with the pullit package (finRes suite) in a SQLite
   database; a collection of helper functions provide easy and fast access.
 Depends: R (>= 3.4.0)
@@ -26,15 +26,15 @@ Imports:
   utils
 Suggests: 
   fewISOs,
-  finRes,
   GICS
 Remotes: 
   bautheac/BBGsymbols,
   bautheac/fewISOs,
-  bautheac/finRes,
   bautheac/GICS,
   bautheac/pullit
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0
+URL: https://bautheac.github.io/storethat
+BugReports: https://github.com/bautheac/storethat/issues
