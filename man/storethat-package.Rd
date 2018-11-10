@@ -9,8 +9,16 @@
 Stores Bloomberg financial data retrieved with the pullit package (finRes suite) in a SQLite
   database; a collection of helper functions provide easy and fast access.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://bautheac.github.io/storethat}
+  \item Report bugs at \url{https://github.com/bautheac/storethat/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: Olivier Bautheac \email{o.bautheac@gmail.com}
+\strong{Maintainer}: Olivier Bauthéac \email{o.bautheac@gmail.com}
 
 }
 \keyword{internal}

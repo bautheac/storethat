@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.r
 \name{db_snapshot}
 \alias{db_snapshot}
-\title{Snapshot of a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
+\title{Snapshots the content of a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
   database.}
 \usage{
 db_snapshot(file = NULL, instrument, book = "all", name = "all")
