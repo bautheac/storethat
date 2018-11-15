@@ -6,8 +6,7 @@
 \alias{storethat-package}
 \title{storethat: Store Bloomberg financial data for later use}
 \description{
-Stores Bloomberg financial data retrieved with the pullit package (finRes suite) in a SQLite
-  database; a collection of helper functions provide easy and fast access.
+Store Bloomberg financial data for off-Bloomberg consumption in R.
 }
 \seealso{
 Useful links:

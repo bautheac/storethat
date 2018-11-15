@@ -6,8 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Stores financial data retrieved from Bloomberg with
-  <a href='https://github.com/bautheac/pullit/'><span class="pkg">pullit</span></a> — db_store • storethat</title>
+<title>Deletes data from a <a href='https://github.com/bautheac/storethat/'><span class="pkg">storethat</span></a> SQLite
+  database. — db_delete • storethat</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,13 +31,11 @@
 
 
 
-<meta property="og:title" content="Stores financial data retrieved from Bloomberg with
-  <a href='https://github.com/bautheac/pullit/'><span class="pkg">pullit</span></a> — db_store" />
+<meta property="og:title" content="Deletes data from a <a href='https://github.com/bautheac/storethat/'><span class="pkg">storethat</span></a> SQLite
+  database. — db_delete" />
 
-<meta property="og:description" content="Stores in a bespoke storethat
-  SQLite database financial data retrieved from Bloomberg
-  using the pullit package
-  (finRes) suite." />
+<meta property="og:description" content="Deletes all or some of the data content of a
+  storethat SQLite database." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -97,75 +95,60 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Stores financial data retrieved from Bloomberg with
-  <a href='https://github.com/bautheac/pullit/'><span class="pkg">pullit</span></a></h1>
+    <h1>Deletes data from a <a href='https://github.com/bautheac/storethat/'><span class="pkg">storethat</span></a> SQLite
+  database.</h1>
     
-    <div class="hidden name"><code>db_store-methods.Rd</code></div>
+    <div class="hidden name"><code>db_delete.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Stores in a bespoke <a href='https://github.com/bautheac/storethat/'><span class="pkg">storethat</span></a>
-  SQLite database financial data retrieved from Bloomberg
-  using the <a href='https://github.com/bautheac/pullit/'><span class="pkg">pullit</span></a> package
-  (<a href='https://bautheac.github.io/finRes/'><span class="pkg">finRes</span></a>) suite.</p>
+    <p>Deletes all or some of the data content of a
+  <a href='https://github.com/bautheac/storethat/'><span class="pkg">storethat</span></a> SQLite database.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='co'># S4 method for FuturesTS</span>
-<span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='co'># S4 method for FuturesAggregate</span>
-<span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='co'># S4 method for FuturesCFTC</span>
-<span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='co'># S4 method for FuturesInfo</span>
-<span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='no'>file</span>)
-
-<span class='co'># S4 method for EquityMarket</span>
-<span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='co'># S4 method for EquityBook</span>
-<span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='co'># S4 method for EquityInfo</span>
-<span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='no'>file</span>)
-
-<span class='co'># S4 method for FundMarket</span>
-<span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-<span class='co'># S4 method for FundInfo</span>
-<span class='fu'>db_store</span>(<span class='no'>object</span>, <span class='no'>file</span>)</pre>
+    <pre class="usage"><span class='fu'>db_delete</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>instrument</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>book</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
+  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"all"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>object</th>
-      <td><p>an S4 object of class DataHistorical or DataInfo
-and respective childs.</p></td>
-    </tr>
     <tr>
       <th>file</th>
       <td><p>a scalar character vector. Specifies the path to the appropriate 'storethat.sqlite'
 file.</p></td>
     </tr>
     <tr>
-      <th>verbose</th>
-      <td><p>A logical scalar vector. Should progression messages be printed? Defaults to TRUE.</p></td>
+      <th>instrument</th>
+      <td><p>a scalar character vector. Specifies the financial instruments to get a
+snapshot for. Must be one of 'all', equity', 'fund' or 'futures'.</p></td>
+    </tr>
+    <tr>
+      <th>book</th>
+      <td><p>a scalar character vector. Instrument dependent; for a given instrument, specifies
+the book for the snapshot; 'all' deletes all data for a given instrument.</p></td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td><p>a scalar character vector. Instrument dependent; for a given instrument, specifies
+the name for the snapshot; 'all' deletes all data for a given instrument and book.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>The <a href='https://github.com/bautheac/pullit/'><span class="pkg">pullit</span></a> package.</p></div>
+    <div class='dont-index'><p>The <a href='https://bautheac.github.io/finRes/'><span class="pkg">finRes</span></a> suite,
+  in particular the <a href='https://github.com/bautheac/pullit/'><span class="pkg">pullit</span></a> &amp;
+  <a href='https://github.com/bautheac/BBGsymbols/'><span class="pkg">BBGsymbols</span></a> packages.</p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>db_delete</span>()
+<span class='co'># }</span><div class='input'>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -173,7 +156,9 @@ file.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

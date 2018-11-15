@@ -1,6 +1,37 @@
+title: storethat
+
+url: https://bautheac.github.io/storethat
+
+articles:
+  - title: storethat
+    desc: >
+        Get started:
+    contents:
+      - storethat
+
 reference:
-- title: Functions
-  contents:
-  - db_create
-  - db_snapshot
-  - db_delete_data
+  - title: create
+    contents:
+      - db_create
+  - title: store
+    contents:
+      - db_store
+  - title: inspect
+    contents:
+      - db_snapshot
+  - title: delete
+    contents:
+      - db_delete
+
+navbar:
+  title: ~
+  type: default
+  left:
+    - text: home
+      href: index.html
+    - text: functions
+      href: reference/index.html
+    - text: get started
+      href: articles/storethat.html
+
+

@@ -384,14 +384,14 @@ db_snapshot <- function(file = NULL, instrument, book = "all", name = "all"){
 #'   \href{https://github.com/bautheac/BBGsymbols/}{\pkg{BBGsymbols}} packages.
 #'
 #'
-#' @examples \dontrun{db_delete_data()}
+#' @examples \dontrun{db_delete()}
 #'
 #'
 #' @importFrom magrittr "%<>%"
 #'
 #'
 #' @export
-db_delete_data <- function(file = NULL, instrument = "all", book = "all", name = "all"){
+db_delete <- function(file = NULL, instrument = "all", book = "all", name = "all"){
 
   if (is.null(file)) file <- file.choose()
   else
@@ -455,12 +455,5 @@ db_delete_data <- function(file = NULL, instrument = "all", book = "all", name =
 
   RSQLite::dbDisconnect(con)
 }
-
-
-
-
-
-
-
 
 
