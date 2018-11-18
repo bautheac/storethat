@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Olivier Bauthéac" />
+
+<meta name="date" content="2018-11-18" />
+
+<title>storethat</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">storethat</h1>
+<h4 class="author"><em>Olivier Bauthéac</em></h4>
+<h4 class="date"><em>2018-11-18</em></h4>
+
+
+
+<p><a href="https://bautheac.github.io/storethat/">storethat</a> together with <a href="https://bautheac.github.io/pullit/">pullit</a> are the two workhorses of the <a href="https://bautheac.github.io/finRes/">finRes</a> suite. Install the development version with <code>devtools::install_github(&quot;bautheac/storethat&quot;)</code>.<br />
+storethat provides an off-Bloomberg storage facility for financial data retireved from Bloomberg using the pullit package.</p>
+<div id="create" class="section level2">
+<h2>create</h2>
+<p>Start by creating a storethat database wherever suits (defaults to home folder):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(storethat)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">db_create</span>(<span class="dt">n =</span> 1L, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p>Using the Bloomberg data field symbols provided by the <a href="https://bautheac.github.io/BBGsymbols/">BBGsymbols</a> package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. ‘n’ is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps restrain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for ‘n’.</p>
+</div>
+<div id="store" class="section level2">
+<h2>store</h2>
+<p>storethat provides store methods for all objects returned by the pullit package. Retrieve data from Bloomberg using pullit and store it in an existing storethat database using:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(pullit)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">end &lt;-<span class="st"> </span><span class="kw">as_date</span>(<span class="st">&quot;2018-10-31&quot;</span>); start &lt;-<span class="st"> </span>end <span class="op">-</span><span class="st"> </span><span class="kw">years</span>(2L)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">tickers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;BP/ LN Equity&quot;</span>, <span class="st">&quot;WEIR LN Equity&quot;</span>, <span class="st">&quot;AAPL US Equity&quot;</span>, <span class="st">&quot;RNO FP Equity&quot;</span>)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">equity_market &lt;-<span class="st"> </span><span class="kw">BBG_equity_market</span>(equity_tickers, start, end, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="kw">db_store</span>(equity_market)</a></code></pre></div>
+</div>
+<div id="whats-in-there" class="section level2">
+<h2>what’s in there</h2>
+<p>Check the content of an existing storethat database at anytime with:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">db_snapshot</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;RNO FP Equity&quot;</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt; # A tibble: 10 x 4</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt;    ticker        field       start      end       </span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt;  1 RNO FP Equity PX_OPEN     2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt;  2 RNO FP Equity PX_HIGH     2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt;  3 RNO FP Equity PX_LOW      2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt;  4 RNO FP Equity PX_LAST     2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt;  5 RNO FP Equity PX_VOLUME   2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt;  6 RNO FP Equity PX_BID      2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt;  7 RNO FP Equity PX_ASK      2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt;  8 RNO FP Equity PX_MID      2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt;  9 RNO FP Equity EQY_SH_OUT  2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt; 10 RNO FP Equity CUR_MKT_CAP 2010-01-04 2018-09-28</span></a></code></pre></div>
+<p>For a broader perspective use:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">db_snapshot</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co">#&gt; # A tibble: 40 x 4</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt;    ticker        field       start      end       </span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt;  1 BP/ LN Equity PX_OPEN     2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt;  2 BP/ LN Equity PX_HIGH     2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt;  3 BP/ LN Equity PX_LOW      2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt;  4 BP/ LN Equity PX_LAST     2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt;  5 BP/ LN Equity PX_VOLUME   2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt;  6 BP/ LN Equity PX_BID      2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt;  7 BP/ LN Equity PX_ASK      2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt;  8 BP/ LN Equity PX_MID      2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt;  9 BP/ LN Equity EQY_SH_OUT  2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt; 10 BP/ LN Equity CUR_MKT_CAP 2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="co">#&gt; # ... with 30 more rows</span></a></code></pre></div>
+</div>
+<div id="update" class="section level2">
+<h2>update</h2>
+<p>Update content in an existing storethat database using pullit:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">storethat_update</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;ADM US Equity&quot;</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p>Higher order updates are also allowed:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">storethat_update</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+</div>
+<div id="delete" class="section level2">
+<h2>delete</h2>
+<p>Delete any content from an existing storethat database with:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">db_delete</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;ADM US Equity&quot;</span>)</a></code></pre></div>
+<p>Or delete everyting with:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">db_delete</span>()</a></code></pre></div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
