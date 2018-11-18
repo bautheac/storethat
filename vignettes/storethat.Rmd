@@ -9,7 +9,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+library(storethat)
+
 knitr::opts_chunk$set(collapse = TRUE, eval = FALSE, comment = "#>")
 ```
 
@@ -17,53 +19,53 @@ knitr::opts_chunk$set(collapse = TRUE, eval = FALSE, comment = "#>")
 storethat provides an off-Bloomberg storage facility for financial data retireved from Bloomberg using the pullit package.
 
 
-## Create
+## create
 Start by creating a storethat database wherever suits (defaults to home folder):
 ```{r create}
 library(storethat)
 
-db_create(path = "~/data-raw/", n = 1L, verbose = FALSE)
+db_create(n = 1L, verbose = FALSE)
 ```
 
 Using the Bloomberg data field symbols provided by the [BBGsymbols](https://bautheac.github.io/BBGsymbols/) package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. 'n' is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps restrain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for 'n'.
 
 
-## Store
+## store
 storethat provides store methods for all objects returned by the pullit package. Retrieve data from Bloomberg using pullit and store it in an existing storethat database using:
 ```{r store}
 library(pullit)
 
 end <- as_date("2018-10-31"); start <- end - years(2L)
-tickers <- c("ADM US Equity", "KHC US Equity", "XPO US Equity")
+tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
 equity_market <- BBG_equity_market(equity_tickers, start, end, verbose = FALSE)
 
 db_store(equity_market)
 ```
 
 
-## What's in there
+## what's in there
 Check the content of an existing storethat database at anytime with:
-```{r `check one`}
-db_snapshot(instrument = "equity", book = "market", name = "ADM US Equity")
+```{r `check one`, eval = TRUE}
+db_snapshot(instrument = "equity", book = "market", name = "RNO FP Equity")
 ```
 For a broader perspective use:
-```{r `check all`}
-db_snapshot(instrument = "equity")
+```{r `check all`, eval = TRUE}
+db_snapshot(instrument = "equity", book = "market")
 ```
 
 
-## Update
+## update
 Update content in an existing storethat database using pullit:
 ```{r `update one`}
 storethat_update(instrument = "equity", book = "market", name = "ADM US Equity", verbose = FALSE)
 ```
-Or update everything with:
+Higher order updates are also allowed:
 ```{r `update all`}
-storethat_update(verbose = FALSE)
+storethat_update(instrument = "equity", verbose = FALSE)
 ```
 
 
-## Delete
+## delete
 Delete any content from an existing storethat database with:
 ```{r `delete one`}
 db_delete(instrument = "equity", book = "market", name = "ADM US Equity")

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Olivier Bauthéac" />
 
-<meta name="date" content="2018-11-17" />
+<meta name="date" content="2018-11-18" />
 
 <title>storethat</title>
 
@@ -278,47 +278,74 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">storethat</h1>
 <h4 class="author"><em>Olivier Bauthéac</em></h4>
-<h4 class="date"><em>2018-11-17</em></h4>
+<h4 class="date"><em>2018-11-18</em></h4>
 
 
 
 <p><a href="https://bautheac.github.io/storethat/">storethat</a> together with <a href="https://bautheac.github.io/pullit/">pullit</a> are the two workhorses of the <a href="https://bautheac.github.io/finRes/">finRes</a> suite. Install the development version with <code>devtools::install_github(&quot;bautheac/storethat&quot;)</code>.<br />
 storethat provides an off-Bloomberg storage facility for financial data retireved from Bloomberg using the pullit package.</p>
 <div id="create" class="section level2">
-<h2>Create</h2>
+<h2>create</h2>
 <p>Start by creating a storethat database wherever suits (defaults to home folder):</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(storethat)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">db_create</span>(<span class="dt">path =</span> <span class="st">&quot;~/data-raw/&quot;</span>, <span class="dt">n =</span> 1L, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">db_create</span>(<span class="dt">n =</span> 1L, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p>Using the Bloomberg data field symbols provided by the <a href="https://bautheac.github.io/BBGsymbols/">BBGsymbols</a> package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. ‘n’ is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps restrain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for ‘n’.</p>
 </div>
 <div id="store" class="section level2">
-<h2>Store</h2>
+<h2>store</h2>
 <p>storethat provides store methods for all objects returned by the pullit package. Retrieve data from Bloomberg using pullit and store it in an existing storethat database using:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(pullit)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb2-3" data-line-number="3">end &lt;-<span class="st"> </span><span class="kw">as_date</span>(<span class="st">&quot;2018-10-31&quot;</span>); start &lt;-<span class="st"> </span>end <span class="op">-</span><span class="st"> </span><span class="kw">years</span>(2L)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">tickers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ADM US Equity&quot;</span>, <span class="st">&quot;KHC US Equity&quot;</span>, <span class="st">&quot;XPO US Equity&quot;</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">tickers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;BP/ LN Equity&quot;</span>, <span class="st">&quot;WEIR LN Equity&quot;</span>, <span class="st">&quot;AAPL US Equity&quot;</span>, <span class="st">&quot;RNO FP Equity&quot;</span>)</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5">equity_market &lt;-<span class="st"> </span><span class="kw">BBG_equity_market</span>(equity_tickers, start, end, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb2-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb2-7" data-line-number="7"><span class="kw">db_store</span>(equity_market)</a></code></pre></div>
 </div>
 <div id="whats-in-there" class="section level2">
-<h2>What’s in there</h2>
+<h2>what’s in there</h2>
 <p>Check the content of an existing storethat database at anytime with:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">db_snapshot</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;ADM US Equity&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">db_snapshot</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;RNO FP Equity&quot;</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt; # A tibble: 10 x 4</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt;    ticker        field       start      end       </span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt;  1 RNO FP Equity PX_OPEN     2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt;  2 RNO FP Equity PX_HIGH     2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt;  3 RNO FP Equity PX_LOW      2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt;  4 RNO FP Equity PX_LAST     2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt;  5 RNO FP Equity PX_VOLUME   2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt;  6 RNO FP Equity PX_BID      2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt;  7 RNO FP Equity PX_ASK      2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt;  8 RNO FP Equity PX_MID      2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt;  9 RNO FP Equity EQY_SH_OUT  2010-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt; 10 RNO FP Equity CUR_MKT_CAP 2010-01-04 2018-09-28</span></a></code></pre></div>
 <p>For a broader perspective use:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">db_snapshot</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">db_snapshot</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co">#&gt; # A tibble: 40 x 4</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt;    ticker        field       start      end       </span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt;  1 BP/ LN Equity PX_OPEN     2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt;  2 BP/ LN Equity PX_HIGH     2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt;  3 BP/ LN Equity PX_LOW      2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt;  4 BP/ LN Equity PX_LAST     2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt;  5 BP/ LN Equity PX_VOLUME   2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt;  6 BP/ LN Equity PX_BID      2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt;  7 BP/ LN Equity PX_ASK      2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt;  8 BP/ LN Equity PX_MID      2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt;  9 BP/ LN Equity EQY_SH_OUT  2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt; 10 BP/ LN Equity CUR_MKT_CAP 2000-01-04 2018-09-28</span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="co">#&gt; # ... with 30 more rows</span></a></code></pre></div>
 </div>
 <div id="update" class="section level2">
-<h2>Update</h2>
+<h2>update</h2>
 <p>Update content in an existing storethat database using pullit:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">storethat_update</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;ADM US Equity&quot;</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
-<p>Or update everything with:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">storethat_update</span>(<span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p>Higher order updates are also allowed:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">storethat_update</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 </div>
 <div id="delete" class="section level2">
-<h2>Delete</h2>
+<h2>delete</h2>
 <p>Delete any content from an existing storethat database with:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">db_delete</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;ADM US Equity&quot;</span>)</a></code></pre></div>
 <p>Or delete everyting with:</p>
