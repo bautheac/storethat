@@ -13,7 +13,7 @@ db_delete(file = NULL, instrument = "all", book = "all",
 file.}
 
 \item{instrument}{a scalar character vector. Specifies the financial instruments to get a
-snapshot for. Must be one of 'all', equity', 'fund' or 'futures'.}
+snapshot for. Must be one of 'all', equity', 'index', 'fund' or 'futures'.}
 
 \item{book}{a scalar character vector. Instrument dependent; for a given instrument, specifies
 the book for the snapshot; 'all' deletes all data for a given instrument.}

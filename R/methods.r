@@ -450,3 +450,104 @@ setMethod("db_store", signature = c(object = "FundInfo"), function(object, file)
   RSQLite::dbDisconnect(con)
 })
 
+
+## index ####
+
+### market ####
+
+#### Store method for S4 objects of class \linkS4class{IndexMarket}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,IndexMarket
+#'
+#'
+#' @importClassesFrom pullit IndexMarket
+#'
+#'
+#' @export
+setMethod("db_store", signature = c(object = "IndexMarket"), function(object, file, verbose){
+
+  if (is.null(file)) file <- file.choose()
+  else
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+      stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
+
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'index' AND book = 'market';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+
+  if (!all_tickers_exist(tickers = unique(object@tickers$ticker), table_tickers = "tickers_index", con = con))
+    update_tickers(tickers = unique(object@tickers$ticker), table_tickers = "tickers_index", con = con)
+  tickers <- RSQLite::dbReadTable(con, "tickers_index")
+
+
+  dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",  max(object@data$date), "';")
+  dates <- dplyr::semi_join(RSQLite::dbGetQuery(con, dates) %>% dplyr::mutate(date = as.Date(date)),
+                            dplyr::distinct(object@data, date), by = "date") %>%
+    dplyr::mutate(date = as.Date(date))
+
+  for (i in unique(dates$period)){
+    update_data(data = dplyr::semi_join(object@data, dplyr::filter(dates, period == i), by = "date"),
+                table_data = paste0("data_index_market_", i), tickers = tickers, fields = fields,
+                dates = dplyr::filter(dates, period == i), con = con)
+    if (verbose) done(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
+                             data.table::last(dplyr::filter(dates, period == i)$date), " done."))
+  }
+
+  RSQLite::dbDisconnect(con)
+})
+
+
+
+### info ####
+
+#### Store method for S4 objects of class \linkS4class{IndexInfo}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,IndexInfo
+#'
+#'
+#' @importClassesFrom pullit IndexInfo
+#'
+#'
+#' @export
+setMethod("db_store", signature = c(object = "IndexInfo"), function(object, file){
+
+  if (is.null(file)) file <- file.choose()
+  else
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+      stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
+
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'index' AND book = 'info';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+
+  if (!all_tickers_exist(tickers = unique(object@info$ticker), table_tickers = "tickers_index", con))
+    update_tickers(tickers = unique(object@info$ticker), table_tickers = "tickers_index", con)
+  tickers <- RSQLite::dbReadTable(con, "tickers_index")
+
+
+  date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
+  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
+
+  query <- paste0("DELETE FROM data_index_info WHERE ticker_id IN (",
+                  paste(dplyr::filter(tickers, ticker %in% unique(object@info$ticker))$id, collapse = ", "),
+                  ");")
+  RSQLite::dbExecute(con = con, query)
+
+  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, field, value) %>%
+    dplyr::mutate(field = as.character(field)) %>%
+    dplyr::left_join(fields, by = c("field" = "symbol")) %>% dplyr::select(ticker_id, field_id = id, value) %>%
+    dplyr::mutate(date_id = !! date_id) %>% dplyr::select(ticker_id, field_id, date_id, value)
+
+  RSQLite::dbWriteTable(con = con, "data_index_info", query, row.names = FALSE, overwrite = FALSE, append = TRUE)
+  RSQLite::dbDisconnect(con)
+})
+
+

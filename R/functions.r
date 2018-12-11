@@ -231,6 +231,36 @@ db_create <- function(path = NULL, n = 10L, verbose = TRUE){
   }
   if (verbose) done("built fund tables")
 
+
+  # index ####
+  ## tickers ####
+  ### tickers_index ####
+  query <- "CREATE TABLE tickers_index( id INTEGER PRIMARY KEY AUTOINCREMENT, ticker VARCHAR(50) NOT NULL UNIQUE );"
+  RSQLite::dbExecute(con, query)
+
+  ## data ####
+  ### data_index_info ####
+  query <- "CREATE TABLE data_index_info(
+  ticker_id INT UNSIGNED NOT NULL REFERENCES tickers_index(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  field_id SMALLINT UNSIGNED REFERENCES support_fields(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  date_id INT UNSIGNED NOT NULL REFERENCES support_dates(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  value TEXT, PRIMARY KEY (ticker_id, field_id, date_id)
+  );"
+  RSQLite::dbExecute(con, query)
+
+  ### data_index_market ####
+  for (i in unique(dates$period)){
+    query <- paste0("CREATE TABLE data_index_market_", i,
+                    "( ticker_id INT UNSIGNED NOT NULL REFERENCES tickers_equity(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  field_id SMALLINT UNSIGNED REFERENCES support_fields(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  date_id INT UNSIGNED NOT NULL REFERENCES support_dates(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  value VARCHAR(20), UNIQUE (ticker_id, field_id, date_id)
+    );")
+    RSQLite::dbExecute(con, query)
+  }
+  if (verbose) done("built index tables")
+
+
   if (verbose) done("job done")
 }
 
@@ -252,7 +282,7 @@ db_create <- function(path = NULL, n = 10L, verbose = TRUE){
 #'   file.
 #'
 #' @param instrument a scalar character vector. Specifies the financial instruments to get a
-#'   snapshot for. Must be one of 'all', equity', 'fund' or 'futures'.
+#'   snapshot for. Must be one of 'all', equity', 'index', 'fund' or 'futures'.
 #'
 #' @param book a scalar character vector. Instrument dependent; for a given instrument, specifies
 #'   the book for the snapshot; 'all' snapshots all the books available for the given instrument.
@@ -332,6 +362,12 @@ db_snapshot <- function(file = NULL, instrument, book = "all", name = "all"){
                                     by = "ticker_id") %>%
                    dplyr::select(ticker, field, start, end),
 
+                 index = db_snapshot_index(book, dplyr::filter(names, instrument == !! instrument) %>%
+                                             dplyr::select(-instrument), dates, con) %>%
+                   dplyr::left_join(dplyr::select(names, ticker_id = id, ticker),
+                                    by = "ticker_id") %>%
+                   dplyr::select(ticker, field, start, end),
+
                  futures = db_snapshot_futures(book, dplyr::filter(names, instrument == !! instrument) %>%
                                                  dplyr::select(-instrument), dates, con) %>%
                    dplyr::left_join(dplyr::select(names, active_contract_ticker_id = id,
@@ -370,7 +406,7 @@ db_snapshot <- function(file = NULL, instrument, book = "all", name = "all"){
 #'   file.
 #'
 #' @param instrument a scalar character vector. Specifies the financial instruments to get a
-#'   snapshot for. Must be one of 'all', equity', 'fund' or 'futures'.
+#'   snapshot for. Must be one of 'all', equity', 'index', 'fund' or 'futures'.
 #'
 #' @param book a scalar character vector. Instrument dependent; for a given instrument, specifies
 #'   the book for the snapshot; 'all' deletes all data for a given instrument.
@@ -443,7 +479,7 @@ db_delete <- function(file = NULL, instrument = "all", book = "all", name = "all
 
          all = {
 
-           for (x in c("equity", "fund", "futures"))
+           for (x in c("equity", "index", "fund", "futures"))
              db_delete_data_book(instrument = x, book, names, con)
 
          },

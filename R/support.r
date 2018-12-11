@@ -450,11 +450,6 @@ db_snapshot_futures_cftc <- function(names, dates, con){
 
 
 
-
-
-
-
-
 ## fund ####
 
 db_snapshot_fund <- function(book, names, dates, con){
@@ -471,6 +466,27 @@ db_snapshot_fund <- function(book, names, dates, con){
   )
 
 }
+
+
+## index ####
+
+db_snapshot_index <- function(book, names, dates, con){
+
+  switch(book,
+
+         market = db_snapshot_market(instrument = "index", names, dates, con),
+
+         info = db_snapshot_info(instrument = "index", names, dates, con),
+
+         all = rbind(db_snapshot_market(instrument = "index", names, dates, con),
+                     db_snapshot_info(instrument = "index", names, dates, con))
+
+  )
+
+}
+
+
+
 
 
 

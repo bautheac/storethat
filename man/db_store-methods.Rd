@@ -21,6 +21,10 @@
 \alias{db_store,FundMarket}
 \alias{db_store,FundInfo-method}
 \alias{db_store,FundInfo}
+\alias{db_store,IndexMarket-method}
+\alias{db_store,IndexMarket}
+\alias{db_store,IndexInfo-method}
+\alias{db_store,IndexInfo}
 \title{Stores financial data retrieved from Bloomberg with
   \href{https://github.com/bautheac/pullit/}{\pkg{pullit}}}
 \usage{
@@ -44,6 +48,10 @@ db_store(object, file = NULL, verbose = TRUE)
 \S4method{db_store}{FundMarket}(object, file = NULL, verbose = TRUE)
 
 \S4method{db_store}{FundInfo}(object, file)
+
+\S4method{db_store}{IndexMarket}(object, file = NULL, verbose = TRUE)
+
+\S4method{db_store}{IndexInfo}(object, file)
 }
 \arguments{
 \item{object}{an S4 object of class \linkS4class{DataHistorical} or \linkS4class{DataInfo}
