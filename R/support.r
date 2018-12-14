@@ -703,8 +703,6 @@ db_delete_data_book <- function(instrument, book, names, con){
 }
 
 
-### info ####
-
 
 
 

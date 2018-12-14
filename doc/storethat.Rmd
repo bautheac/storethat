@@ -11,8 +11,7 @@ vignette: >
 
 ```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
 library(storethat)
-
-knitr::opts_chunk$set(collapse = TRUE, eval = FALSE, comment = "#>")
+knitr::opts_chunk$set(collapse = T, eval = F, comment = "#>")
 ```
 
 [storethat](https://bautheac.github.io/storethat/) together with [pullit](https://bautheac.github.io/pullit/) are the two workhorses of the [finRes](https://bautheac.github.io/finRes/) suite. Install the development version with `devtools::install_github("bautheac/storethat")`.  
@@ -24,10 +23,10 @@ Start by creating a storethat database wherever suits (defaults to home folder):
 ```{r create}
 library(storethat)
 
-db_create(n = 1L, verbose = FALSE)
+db_create(n = 1L, verbose = F)
 ```
 
-Using the Bloomberg data field symbols provided by the [BBGsymbols](https://bautheac.github.io/BBGsymbols/) package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. 'n' is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps restrain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for 'n'.
+Using the Bloomberg data field symbols provided by the [BBGsymbols](https://bautheac.github.io/BBGsymbols/) package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. 'n' is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for 'n'.
 
 
 ## store
@@ -37,7 +36,7 @@ library(pullit)
 
 end <- as_date("2018-10-31"); start <- end - years(2L)
 tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
-equity_market <- BBG_equity_market(equity_tickers, start, end, verbose = FALSE)
+equity_market <- pull_equity_market(Bloomberg = T, tickers, start, end, verbose = F)
 
 db_store(equity_market)
 ```
@@ -57,11 +56,11 @@ db_snapshot(instrument = "equity", book = "market")
 ## update
 Update content in an existing storethat database using pullit:
 ```{r `update one`}
-storethat_update(instrument = "equity", book = "market", name = "ADM US Equity", verbose = FALSE)
+storethat_update(instrument = "equity", book = "market", name = "ADM US Equity", verbose = F)
 ```
 Higher order updates are also allowed:
 ```{r `update all`}
-storethat_update(instrument = "equity", verbose = FALSE)
+storethat_update(instrument = "equity", verbose = F)
 ```
 
 
