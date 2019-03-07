@@ -347,7 +347,7 @@ db_snapshot_futures <- function(book, names, dates, con){
            plyr::rbind.fill(market, CFTC, info)
 
          }
-           )
+  )
 }
 
 
@@ -405,9 +405,30 @@ db_snapshot_futures_aggregate <- function(names, dates, con){
     dplyr::select(active_contract_ticker_id, field, start = date, end) %>%
     dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("end" = "date_id")) %>%
     dplyr::select(active_contract_ticker_id, field, start, end = date)
-
 }
 
+#### spot ####
+db_snapshot_futures_spot <- function(names, dates, con){
+
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND
+  type = 'spot';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+  data <- db_snapshot_historical("data_futures_spot", names, fields, dates, con)
+
+  purrr::map2(list(c("start"), c("end")),
+              dplyr::lst(min = min, max = max),
+              ~ dplyr::group_by(data, ticker_id, field_id) %>%
+                dplyr::summarise_at(.x, .y)) %>%
+    purrr::reduce(dplyr::inner_join, by = c("ticker_id", "field_id")) %>%
+    dplyr::ungroup() %>%
+    dplyr::left_join(dplyr::select(fields, field_id = id, symbol), by = "field_id") %>%
+    dplyr::select(active_contract_ticker_id = ticker_id, field = symbol, start, end) %>%
+    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("start" = "date_id")) %>%
+    dplyr::select(active_contract_ticker_id, field, start = date, end) %>%
+    dplyr::left_join(dplyr::select(dates, date_id = id, date), by = c("end" = "date_id")) %>%
+    dplyr::select(active_contract_ticker_id, field, start, end = date)
+}
 
 ### CFTC ####
 db_snapshot_futures_cftc <- function(names, dates, con){

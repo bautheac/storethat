@@ -102,6 +102,54 @@ setMethod("db_store", signature = c(object = "FuturesAggregate"), function(objec
 })
 
 
+### spot ####
+
+#### Store method for S4 objects of class \linkS4class{FuturesSpot}.
+
+#' @rdname db_store-methods
+#' @aliases db_store,FuturesSpot
+#'
+#'
+#' @importClassesFrom pullit FuturesSpot
+#'
+#'
+#' @export
+setMethod("db_store", signature = c(object = "FuturesSpot"), function(object, file, verbose){
+
+  if (is.null(file)) file <- file.choose()
+  else
+    if (! all(rlang::is_scalar_character(file), stringr::str_detect(file, pattern = ".+storethat\\.sqlite$")))
+      stop("Parameter 'file' must be supplied as a valid 'storethat' SQLite database file (ie. ~/storethat.sqlite)")
+
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
+
+  if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND type = 'aggregate';"
+  fields <- RSQLite::dbGetQuery(con = con, fields)
+
+  if (!all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker),
+                         table_tickers = "tickers_futures", con))
+    update_tickers(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)
+  active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
+
+  dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",  max(object@data$date), "';")
+  dates <- dplyr::semi_join(RSQLite::dbGetQuery(con, dates) %>% dplyr::mutate(date = as.Date(date)),
+                            dplyr::distinct(object@data, date), by = "date") %>%
+    dplyr::mutate(date = as.Date(date))
+
+  for (i in unique(dates$period)){
+    update_data(data = dplyr::semi_join(object@data, dplyr::filter(dates, period == i), by = "date"),
+                table_data = paste0("data_futures_spot_", i), tickers = active_contract_tickers, fields = fields,
+                dates = dplyr::filter(dates, period == i), con = con)
+    if (verbose) done(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
+                             data.table::last(dplyr::filter(dates, period == i)$date), " done."))
+
+  }
+
+  RSQLite::dbDisconnect(con)
+})
+
+
 ### CFTC ####
 
 #### Store method for S4 objects of class \linkS4class{FuturesCFTC}.

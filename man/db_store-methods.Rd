@@ -7,6 +7,8 @@
 \alias{db_store,FuturesTS}
 \alias{db_store,FuturesAggregate-method}
 \alias{db_store,FuturesAggregate}
+\alias{db_store,FuturesSpot-method}
+\alias{db_store,FuturesSpot}
 \alias{db_store,FuturesCFTC-method}
 \alias{db_store,FuturesCFTC}
 \alias{db_store,FuturesInfo-method}
@@ -34,6 +36,8 @@ db_store(object, file = NULL, verbose = TRUE)
 
 \S4method{db_store}{FuturesAggregate}(object, file = NULL,
   verbose = TRUE)
+
+\S4method{db_store}{FuturesSpot}(object, file = NULL, verbose = TRUE)
 
 \S4method{db_store}{FuturesCFTC}(object, file = NULL, verbose = TRUE)
 

@@ -150,6 +150,17 @@ db_create <- function(path = NULL, n = 10L, verbose = TRUE){
     RSQLite::dbExecute(con, query)
   }
 
+  ### data_futures_spot ####
+  for (i in unique(dates$period)){
+    query <- paste0("CREATE TABLE data_futures_spot_", i,
+                    "( ticker_id INT UNSIGNED NOT NULL REFERENCES tickers_futures(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  field_id SMALLINT UNSIGNED REFERENCES support_fields(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  date_id INT UNSIGNED NOT NULL REFERENCES support_dates(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE,
+  value VARCHAR(20), UNIQUE (ticker_id, field_id, date_id)
+  );")
+    RSQLite::dbExecute(con, query)
+  }
+
   ### data_futures_aggregate ####
   for (i in unique(dates$period)){
     query <- paste0("CREATE TABLE data_futures_aggregate_", i,
