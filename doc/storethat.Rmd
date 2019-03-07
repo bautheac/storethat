@@ -23,7 +23,7 @@ Start by creating a storethat database wherever suits (defaults to home folder):
 ```{r create}
 library(storethat)
 
-db_create(n = 1L, verbose = F)
+db_create(path = "../data-raw", n = 1L, verbose = F)
 ```
 
 Using the Bloomberg data field symbols provided by the [BBGsymbols](https://bautheac.github.io/BBGsymbols/) package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. 'n' is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for 'n'.
@@ -34,9 +34,9 @@ storethat provides store methods for all objects returned by the pullit package.
 ```{r store}
 library(pullit)
 
-end <- as_date("2018-10-31"); start <- end - years(2L)
+storethat <- "../data-raw/storethat.sqlite"; end <- "2018-12-31"; start <- "2016-01-01"
 tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
-equity_market <- pull_equity_market(Bloomberg = T, tickers, start, end, verbose = F)
+equity_market <- pull_equity_market(source = "Bloomberg", tickers, start, end, verbose = F, file = storethat)
 
 db_store(equity_market)
 ```
@@ -44,32 +44,35 @@ db_store(equity_market)
 
 ## what's in there
 Check the content of an existing storethat database at anytime with:
+```{r, eval = TRUE, echo = F}
+storethat <- "../data-raw/storethat.sqlite"
+```
 ```{r `check one`, eval = TRUE}
-db_snapshot(instrument = "equity", book = "market", name = "RNO FP Equity")
+db_snapshot(file = storethat, instrument = "equity", book = "market", name = "RNO FP Equity")
 ```
 For a broader perspective use:
 ```{r `check all`, eval = TRUE}
-db_snapshot(instrument = "equity", book = "market")
+db_snapshot(file = storethat, instrument = "equity", book = "market")
 ```
 
 
 ## update
 Update content in an existing storethat database using pullit:
 ```{r `update one`}
-storethat_update(instrument = "equity", book = "market", name = "ADM US Equity", verbose = F)
+storethat_update(instrument = "equity", book = "market", name = "ADM US Equity", file = storethat, verbose = F)
 ```
 Higher order updates are also allowed:
 ```{r `update all`}
-storethat_update(instrument = "equity", verbose = F)
+storethat_update(instrument = "equity", file = storethat, verbose = F)
 ```
 
 
 ## delete
 Delete any content from an existing storethat database with:
 ```{r `delete one`}
-db_delete(instrument = "equity", book = "market", name = "ADM US Equity")
+db_delete(file = storethat, instrument = "equity", book = "market", name = "ADM US Equity")
 ```
 Or delete everyting with:
 ```{r `delete all`}
-db_delete()
+db_delete(file = storethat)
 ```

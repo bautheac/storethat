@@ -5,7 +5,7 @@
 #                                                         "industry name", "key stats", "market", "MIC", "MIC (primary exchange)", "name", "participant", "position", "position ticker",
 #                                                         "roll", "rolls", "roll adjustment", "roll days", "roll months", "roll type", "roll_type_id", "sector", "sector id",
 #                                                         "sector name", "security type", "start", "subindustry", "subindustry_id", "subindustry id", "subindustry_name",
-#                                                         "subindustry name", "subsector", "symbol", "term structure length", "ticker", "tickers_CFTC", "tickers_futures",
+#                                                         "subindustry name", "subsector", "symbol", "term structure length", "ticker", "tickers_cftc", "tickers_futures",
 #                                                         "TS position", "type", "underlying", "unit", "value"))
 
 
