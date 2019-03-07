@@ -124,7 +124,7 @@ setMethod("db_store", signature = c(object = "FuturesSpot"), function(object, fi
   con <- RSQLite::dbConnect(RSQLite::SQLite(), file)
 
   if (! all_fields_exist(fields = object@fields, con = con)) update_fields(fields = object@fields, con = con)
-  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND type = 'aggregate';"
+  fields <- "SELECT * FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND type = 'spot';"
   fields <- RSQLite::dbGetQuery(con = con, fields)
 
   if (!all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker),
@@ -132,7 +132,8 @@ setMethod("db_store", signature = c(object = "FuturesSpot"), function(object, fi
     update_tickers(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)
   active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
 
-  dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",  max(object@data$date), "';")
+  dates <- paste0("SELECT * FROM support_dates WHERE date >= '", min(object@data$date), "' AND date <= '",
+                  max(object@data$date), "';")
   dates <- dplyr::semi_join(RSQLite::dbGetQuery(con, dates) %>% dplyr::mutate(date = as.Date(date)),
                             dplyr::distinct(object@data, date), by = "date") %>%
     dplyr::mutate(date = as.Date(date))
@@ -143,9 +144,7 @@ setMethod("db_store", signature = c(object = "FuturesSpot"), function(object, fi
                 dates = dplyr::filter(dates, period == i), con = con)
     if (verbose) done(paste0("Period ", data.table::first(dplyr::filter(dates, period == i)$date), "/",
                              data.table::last(dplyr::filter(dates, period == i)$date), " done."))
-
   }
-
   RSQLite::dbDisconnect(con)
 })
 

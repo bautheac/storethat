@@ -14,7 +14,6 @@ all_fields_exist <- function(fields, con){
   query <- dplyr::anti_join(fields, query, by = names(fields))
 
   nrow(query) == 0L
-
 }
 
 
@@ -34,8 +33,7 @@ update_fields <- function(fields, con){
   query <- "SELECT * FROM support_fields;"; query <- RSQLite::dbGetQuery(con = con, query)
   query <- dplyr::anti_join(fields, query, by = names(fields))
 
-  RSQLite::dbWriteTable(con, "support_fields", query, row.names = FALSE, overwrite = FALSE, append = TRUE)
-
+  RSQLite::dbWriteTable(con, "support_fields", query, row.names = F, overwrite = F, append = T)
 }
 
 
@@ -57,7 +55,6 @@ all_tickers_exist <- function(tickers, table_tickers, con){
   query <- purrr::flatten_chr(RSQLite::dbGetQuery(con = con, query))
 
   all(tickers %in% query)
-
 }
 
 
@@ -80,8 +77,7 @@ update_tickers <- function(tickers, table_tickers, con){
 
   RSQLite::dbWriteTable(con = con, table_tickers,
                         tibble::tibble(ticker = tickers[!tickers %in% query]),
-                        row.names = FALSE, overwrite = FALSE, append = TRUE)
-
+                        row.names = F, overwrite = F, append = T)
 }
 
 
@@ -109,9 +105,8 @@ update_term_structure_tickers <- function(tickers, con){
                   roll_type_symbol = `roll type symbol`, roll_days = `roll days`,
                   roll_months = `roll months`, roll_adjustment_symbol = `roll adjustment symbol`)
 
-  RSQLite::dbWriteTable(con = con, "tickers_support_futures_ts", tickers, row.names = FALSE,
-                        overwrite = FALSE, append = TRUE)
-
+  RSQLite::dbWriteTable(con = con, "tickers_support_futures_ts", tickers, row.names = F,
+                        overwrite = F, append = T)
 }
 
 
@@ -165,14 +160,13 @@ update_cftc_tickers <- function(tickers, con){
 #' @param con A connection object to the relevant database.
 update_data <- function(data, table_data, tickers, fields, dates, con){
 
-  data <- dplyr::left_join(data,
-                           tickers,
-                           by = "ticker") %>% dplyr::select(ticker_id = id, field, date, value) %>%
+  data <- dplyr::left_join(data, tickers, by = "ticker") %>%
+    dplyr::select(ticker_id = id, field, date, value) %>%
     dplyr::mutate(field = as.character(field)) %>%
     dplyr::left_join(fields, by = c("field" = "symbol")) %>%
     dplyr::select(ticker_id, field_id = id, date, value) %>%
     dplyr::left_join(dplyr::mutate(dates, date = as.Date(date)), by = "date") %>%
-    dplyr::select(ticker_id, field_id, date_id  = id, value)
+    dplyr::select(ticker_id, field_id, date_id = id, value)
 
   query <- paste0("SELECT ticker_id, field_id, date_id FROM ", table_data, " WHERE ticker_id IN (",
                   paste(unique(data$ticker_id), collapse = ", "), ") AND field_id IN (",
@@ -182,9 +176,8 @@ update_data <- function(data, table_data, tickers, fields, dates, con){
 
   data <- dplyr::anti_join(data, query, by = c("ticker_id", "field_id", "date_id"))
 
-  if (nrow(data) > 0L) RSQLite::dbWriteTable(con = con, table_data, data, row.names = FALSE,
-                                             overwrite = FALSE, append = TRUE)
-
+  if (nrow(data) > 0L) RSQLite::dbWriteTable(con = con, table_data, data, row.names = F,
+                                             overwrite = F, append = T)
 }
 
 
@@ -736,21 +729,15 @@ db_delete_data_book <- function(instrument, book, names, con){
 
 
 
-bulletize <- function(line, bullet = "*") {
-
-  paste0(bullet, " ", line)
-
-}
+bulletize <- function(line, bullet = "*") paste0(bullet, " ", line)
 
 done <- function(..., .envir = parent.frame()) {
-
   out <- glue::glue(..., .envir = .envir)
-
   cat(bulletize(out, bullet = done_bullet()), "\n", sep = "")
-
 }
 
 done_bullet <- function() crayon::green(clisymbols::symbol$tick)
+
 
 # cat_line <- function(..., quiet = getOption("usethis.quiet", default = FALSE)) {
 #   if (quiet) return(invisible())
