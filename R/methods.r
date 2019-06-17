@@ -27,9 +27,9 @@ setMethod("db_store", signature = c(object = "FuturesTS"), function(object, file
   fields <- "SELECT id, instrument, book, type, symbol FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND type = 'term structure';"
   fields <- RSQLite::dbGetQuery(con = con, fields)
 
-  if (! all_tickers_exist(tickers = unique(object@active_contract_tickers$`active contract ticker`),
+  if (! all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker),
                           table_tickers = "tickers_futures", con))
-    update_tickers(tickers = unique(object@active_contract_tickers$`active contract ticker`), table_tickers = "tickers_futures", con)
+    update_tickers(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)
   active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
 
   if (! all_tickers_exist(tickers = unique(object@term_structure_tickers$ticker),
