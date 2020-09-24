@@ -6,18 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>storethat • storethat</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="storethat">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="storethat">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -46,7 +47,14 @@
   <a href="../articles/storethat.html">get started</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/bautheac/storethat/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -55,49 +63,54 @@
 <!--/.navbar -->
 
       
-      </header><div class="row">
+
+      </header><script src="storethat_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>storethat</h1>
+      <h1 data-toc-skip>storethat</h1>
                         <h4 class="author">Olivier Bauthéac</h4>
             
-            <h4 class="date">2019-03-07</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/bautheac/storethat/blob/master/vignettes/storethat.Rmd"><code>vignettes/storethat.Rmd</code></a></small>
       <div class="hidden name"><code>storethat.Rmd</code></div>
 
     </div>
 
     
     
-<p><a href="https://bautheac.github.io/storethat/">storethat</a> together with <a href="https://bautheac.github.io/pullit/">pullit</a> are the two workhorses of the <a href="https://bautheac.github.io/finRes/">finRes</a> suite. Install the development version with <code><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">devtools::install_github("bautheac/storethat")</a></code>.<br>
+<p><a href="https://bautheac.github.io/storethat/">storethat</a> together with <a href="https://bautheac.github.io/pullit/">pullit</a> are the two workhorses of the <a href="https://bautheac.github.io/finRes/">finRes</a> suite. Install the development version with <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("bautheac/storethat")</a></code>.<br>
 storethat provides an off-Bloomberg storage facility for financial data retireved from Bloomberg using the pullit package.</p>
 <div id="create" class="section level2">
 <h2 class="hasAnchor">
 <a href="#create" class="anchor"></a>create</h2>
 <p>Start by creating a storethat database wherever suits (defaults to home folder):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(storethat)
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://bautheac.github.io/storethat">storethat</a></span>)
 
-<span class="kw"><a href="../reference/db_create.html">db_create</a></span>(<span class="dt">path =</span> <span class="st">"../data-raw"</span>, <span class="dt">n =</span> 1L, <span class="dt">verbose =</span> F)</code></pre></div>
+<span class="fu"><a href="../reference/db_create.html">db_create</a></span>(path = <span class="st">"../data-raw"</span>, n = <span class="fl">1L</span>, verbose = <span class="kw">F</span>)
+</pre></div>
 <p>Using the Bloomberg data field symbols provided by the <a href="https://bautheac.github.io/BBGsymbols/">BBGsymbols</a> package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. ‘n’ is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for ‘n’.</p>
 </div>
 <div id="store" class="section level2">
 <h2 class="hasAnchor">
 <a href="#store" class="anchor"></a>store</h2>
 <p>storethat provides store methods for all objects returned by the pullit package. Retrieve data from Bloomberg using pullit and store it in an existing storethat database using:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(pullit)
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://bautheac.github.io/pullit">pullit</a></span>)
 
-storethat &lt;-<span class="st"> "../data-raw/storethat.sqlite"</span>; end &lt;-<span class="st"> "2018-12-31"</span>; start &lt;-<span class="st"> "2016-01-01"</span>
-tickers &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"BP/ LN Equity"</span>, <span class="st">"WEIR LN Equity"</span>, <span class="st">"AAPL US Equity"</span>, <span class="st">"RNO FP Equity"</span>)
-equity_market &lt;-<span class="st"> </span><span class="kw"><a href="https://bautheac.github.io/pullit/reference/pull_equity_market.html">pull_equity_market</a></span>(<span class="dt">source =</span> <span class="st">"Bloomberg"</span>, tickers, start, end, <span class="dt">verbose =</span> F, <span class="dt">file =</span> storethat)
+<span class="kw">storethat</span> <span class="op">&lt;-</span> <span class="st">"../data-raw/storethat.sqlite"</span>; <span class="kw">end</span> <span class="op">&lt;-</span> <span class="st">"2018-12-31"</span>; <span class="kw">start</span> <span class="op">&lt;-</span> <span class="st">"2016-01-01"</span>
+<span class="kw">tickers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"BP/ LN Equity"</span>, <span class="st">"WEIR LN Equity"</span>, <span class="st">"AAPL US Equity"</span>, <span class="st">"RNO FP Equity"</span>)
+<span class="kw">equity_market</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://bautheac.github.io/pullit/reference/pull_equity_market.html">pull_equity_market</a></span>(source = <span class="st">"Bloomberg"</span>, <span class="kw">tickers</span>, <span class="kw">start</span>, <span class="kw">end</span>, verbose = <span class="kw">F</span>, file = <span class="kw">storethat</span>)
 
-<span class="kw"><a href="../reference/db_store-methods.html">db_store</a></span>(equity_market)</code></pre></div>
+<span class="fu"><a href="../reference/db_store.html">db_store</a></span>(<span class="kw">equity_market</span>)
+</pre></div>
 </div>
 <div id="whats-in-there" class="section level2">
 <h2 class="hasAnchor">
 <a href="#whats-in-there" class="anchor"></a>what’s in there</h2>
 <p>Check the content of an existing storethat database at anytime with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/db_snapshot.html">db_snapshot</a></span>(<span class="dt">file =</span> storethat, <span class="dt">instrument =</span> <span class="st">"equity"</span>, <span class="dt">book =</span> <span class="st">"market"</span>, <span class="dt">name =</span> <span class="st">"RNO FP Equity"</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="../reference/db_snapshot.html">db_snapshot</a></span>(file = <span class="kw">storethat</span>, instrument = <span class="st">"equity"</span>, book = <span class="st">"market"</span>, name = <span class="st">"RNO FP Equity"</span>)
 <span class="co">#&gt; # A tibble: 10 x 4</span>
 <span class="co">#&gt;    ticker        field       start      end       </span>
 <span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span>
@@ -110,9 +123,11 @@ equity_market &lt;-<span class="st"> </span><span class="kw"><a href="https://ba
 <span class="co">#&gt;  7 RNO FP Equity PX_ASK      2010-01-04 2018-09-28</span>
 <span class="co">#&gt;  8 RNO FP Equity PX_MID      2010-01-04 2018-09-28</span>
 <span class="co">#&gt;  9 RNO FP Equity EQY_SH_OUT  2010-01-04 2018-09-28</span>
-<span class="co">#&gt; 10 RNO FP Equity CUR_MKT_CAP 2010-01-04 2018-09-28</span></code></pre></div>
+<span class="co">#&gt; 10 RNO FP Equity CUR_MKT_CAP 2010-01-04 2018-09-28</span>
+</pre></div>
 <p>For a broader perspective use:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/db_snapshot.html">db_snapshot</a></span>(<span class="dt">file =</span> storethat, <span class="dt">instrument =</span> <span class="st">"equity"</span>, <span class="dt">book =</span> <span class="st">"market"</span>)
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu"><a href="../reference/db_snapshot.html">db_snapshot</a></span>(file = <span class="kw">storethat</span>, instrument = <span class="st">"equity"</span>, book = <span class="st">"market"</span>)
 <span class="co">#&gt; # A tibble: 40 x 4</span>
 <span class="co">#&gt;    ticker        field       start      end       </span>
 <span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span>
@@ -126,41 +141,43 @@ equity_market &lt;-<span class="st"> </span><span class="kw"><a href="https://ba
 <span class="co">#&gt;  8 BP/ LN Equity PX_MID      2000-01-04 2018-09-28</span>
 <span class="co">#&gt;  9 BP/ LN Equity EQY_SH_OUT  2000-01-04 2018-09-28</span>
 <span class="co">#&gt; 10 BP/ LN Equity CUR_MKT_CAP 2000-01-04 2018-09-28</span>
-<span class="co">#&gt; # … with 30 more rows</span></code></pre></div>
+<span class="co">#&gt; # ... with 30 more rows</span>
+</pre></div>
 </div>
 <div id="update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#update" class="anchor"></a>update</h2>
 <p>Update content in an existing storethat database using pullit:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://bautheac.github.io/pullit/reference/storethat_update.html">storethat_update</a></span>(<span class="dt">instrument =</span> <span class="st">"equity"</span>, <span class="dt">book =</span> <span class="st">"market"</span>, <span class="dt">name =</span> <span class="st">"ADM US Equity"</span>, <span class="dt">file =</span> storethat, <span class="dt">verbose =</span> F)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="fu"><a href="https://bautheac.github.io/pullit/reference/storethat_update.html">storethat_update</a></span>(instrument = <span class="st">"equity"</span>, book = <span class="st">"market"</span>, name = <span class="st">"ADM US Equity"</span>, file = <span class="kw">storethat</span>, verbose = <span class="kw">F</span>)
+</pre></div>
 <p>Higher order updates are also allowed:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://bautheac.github.io/pullit/reference/storethat_update.html">storethat_update</a></span>(<span class="dt">instrument =</span> <span class="st">"equity"</span>, <span class="dt">file =</span> storethat, <span class="dt">verbose =</span> F)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="fu"><a href="https://bautheac.github.io/pullit/reference/storethat_update.html">storethat_update</a></span>(instrument = <span class="st">"equity"</span>, file = <span class="kw">storethat</span>, verbose = <span class="kw">F</span>)
+</pre></div>
 </div>
 <div id="delete" class="section level2">
 <h2 class="hasAnchor">
 <a href="#delete" class="anchor"></a>delete</h2>
 <p>Delete any content from an existing storethat database with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/db_delete.html">db_delete</a></span>(<span class="dt">file =</span> storethat, <span class="dt">instrument =</span> <span class="st">"equity"</span>, <span class="dt">book =</span> <span class="st">"market"</span>, <span class="dt">name =</span> <span class="st">"ADM US Equity"</span>)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="fu"><a href="../reference/db_delete.html">db_delete</a></span>(file = <span class="kw">storethat</span>, instrument = <span class="st">"equity"</span>, book = <span class="st">"market"</span>, name = <span class="st">"ADM US Equity"</span>)
+</pre></div>
 <p>Or delete everyting with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/db_delete.html">db_delete</a></span>(<span class="dt">file =</span> storethat)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="fu"><a href="../reference/db_delete.html">db_delete</a></span>(file = <span class="kw">storethat</span>)
+</pre></div>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#create">create</a></li>
-      <li><a href="#store">store</a></li>
-      <li><a href="#whats-in-there">what’s in there</a></li>
-      <li><a href="#update">update</a></li>
-      <li><a href="#delete">delete</a></li>
-      </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
+
 
 
       <footer><div class="copyright">
@@ -168,12 +185,14 @@ equity_market &lt;-<span class="st"> </span><span class="kw"><a href="https://ba
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

@@ -5,8 +5,7 @@
 \title{Deletes data from a \href{https://github.com/bautheac/storethat/}{\pkg{storethat}} SQLite
   database.}
 \usage{
-db_delete(file = NULL, instrument = "all", book = "all",
-  name = "all")
+db_delete(file = NULL, instrument = "all", book = "all", name = "all")
 }
 \arguments{
 \item{file}{a scalar character vector. Specifies the path to the appropriate 'storethat.sqlite'
