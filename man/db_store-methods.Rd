@@ -32,8 +32,7 @@ db_store(object, file = NULL, verbose = TRUE)
 
 \S4method{db_store}{FuturesTS}(object, file = NULL, verbose = TRUE)
 
-\S4method{db_store}{FuturesAggregate}(object, file = NULL,
-  verbose = TRUE)
+\S4method{db_store}{FuturesAggregate}(object, file = NULL, verbose = TRUE)
 
 \S4method{db_store}{FuturesCFTC}(object, file = NULL, verbose = TRUE)
 
