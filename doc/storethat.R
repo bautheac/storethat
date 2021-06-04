@@ -1,39 +1,45 @@
-## ----setup, echo = FALSE, message = FALSE, warning = FALSE---------------
+## ----setup, echo = FALSE, message = FALSE, warning = FALSE--------------------
 library(storethat)
-knitr::opts_chunk$set(collapse = T, eval = F, comment = "#>")
+knitr::opts_chunk$set(collapse = T, eval = T, comment = "#>")
 
-## ----create--------------------------------------------------------------
+## ----create, eval = F---------------------------------------------------------
 #  library(storethat)
 #  
-#  db_create(path = "../data-raw", n = 1L, verbose = F)
+#  db_create(path = "~/data/", n = 1L, verbose = F)
 
-## ----store---------------------------------------------------------------
+## ----`store bbg`, eval = F----------------------------------------------------
 #  library(pullit)
 #  
-#  storethat <- "../data-raw/storethat.sqlite"; end <- "2018-12-31"; start <- "2016-01-01"
+#  storethat <- "~/data/storethat.sqlite"; end <- "2018-09-30"; start <- "2016-01-01"
 #  tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
 #  equity_market <- pull_equity_market(source = "Bloomberg", tickers, start, end, verbose = F, file = storethat)
 #  
-#  db_store(equity_market)
+#  db_store(equity_market, file = storethat)
 
-## ---- eval = TRUE, echo = F----------------------------------------------
-storethat <- "../data-raw/storethat.sqlite"
+## ----`store storethat`, eval = T, echo = F------------------------------------
+library(pullit)
 
-## ----`check one`, eval = TRUE--------------------------------------------
-db_snapshot(file = storethat, instrument = "equity", book = "market", name = "RNO FP Equity")
+storethat <- here::here("data-raw", "storethat.sqlite"); end <- "2018-09-30"; start <- "2016-01-01"
+tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
+equity_market <- pull_equity_market(source = "storethat", tickers, start, end, verbose = F, file = storethat)
 
-## ----`check all`, eval = TRUE--------------------------------------------
-db_snapshot(file = storethat, instrument = "equity", book = "market")
+db_store(equity_market, file = storethat)
 
-## ----`update one`--------------------------------------------------------
-#  storethat_update(instrument = "equity", book = "market", name = "ADM US Equity", file = storethat, verbose = F)
+## ----`check one`, eval = TRUE-------------------------------------------------
+snapshot <- db_snapshot(file = storethat, instrument = "equity", book = "market")
+head(snapshot)
 
-## ----`update all`--------------------------------------------------------
+## ----`update one`, eval = F---------------------------------------------------
+#  storethat_update(
+#    instrument = "equity", book = "market", name = "ADM US Equity", file = storethat, verbose = F
+#    )
+
+## ----`update all`, eval = F---------------------------------------------------
 #  storethat_update(instrument = "equity", file = storethat, verbose = F)
 
-## ----`delete one`--------------------------------------------------------
+## ----`delete one`, eval = F---------------------------------------------------
 #  db_delete(file = storethat, instrument = "equity", book = "market", name = "ADM US Equity")
 
-## ----`delete all`--------------------------------------------------------
+## ----`delete all`, eval = F---------------------------------------------------
 #  db_delete(file = storethat)
 

@@ -50,7 +50,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/bautheac/storethat/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -70,7 +70,6 @@
       <h1 data-toc-skip>storethat</h1>
                         <h4 class="author">Olivier Bauthéac</h4>
             
-            <h4 class="date">2020-09-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/bautheac/storethat/blob/master/vignettes/storethat.Rmd"><code>vignettes/storethat.Rmd</code></a></small>
       <div class="hidden name"><code>storethat.Rmd</code></div>
@@ -79,95 +78,87 @@
 
     
     
-<p><a href="https://bautheac.github.io/storethat/">storethat</a> together with <a href="https://bautheac.github.io/pullit/">pullit</a> are the two workhorses of the <a href="https://bautheac.github.io/finRes/">finRes</a> suite. Install the development version with <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("bautheac/storethat")</a></code>.<br>
-storethat provides an off-Bloomberg storage facility for financial data retireved from Bloomberg using the pullit package.</p>
+<style> body {text-align: justify} </style>
+<p><a href="https://bautheac.github.io/storethat/">storethat</a> together with <a href="https://bautheac.github.io/pullit/">pullit</a> are the two workhorses for data ETL (extract, transform, load) work in the <a href="https://bautheac.github.io/finRes/">finRes</a> suite. <a href="https://bautheac.github.io/storethat/">storethat</a> provides an off-Bloomberg storage facility for financial data retrieved from Bloomberg using the <a href="https://bautheac.github.io/pullit/">pullit</a> package. The package uses a SQLite database designed for easy and fast I/O (input/output) operations involving <a href="https://bautheac.github.io/pullit/">pullit</a> data objects.<br>
+Install the development version with <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("bautheac/storethat")</a></code>.</p>
 <div id="create" class="section level2">
 <h2 class="hasAnchor">
 <a href="#create" class="anchor"></a>create</h2>
-<p>Start by creating a storethat database wherever suits (defaults to home folder):</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://bautheac.github.io/storethat">storethat</a></span>)
+<p>Start by creating a <a href="https://bautheac.github.io/storethat/">storethat</a> database wherever suits (defaults to home folder):</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bautheac.github.io/storethat">storethat</a></span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/db_create.html">db_create</a></span>(path = <span class="st">"../data-raw"</span>, n = <span class="fl">1L</span>, verbose = <span class="kw">F</span>)
-</pre></div>
-<p>Using the Bloomberg data field symbols provided by the <a href="https://bautheac.github.io/BBGsymbols/">BBGsymbols</a> package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. ‘n’ is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for ‘n’.</p>
+<span class="fu"><a href="../reference/db_create.html">db_create</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"~/data/"</span>, n <span class="op">=</span> <span class="fl">1L</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<p>Using the <code>fields</code> dataset from the <a href="https://bautheac.github.io/BBGsymbols/">BBGsymbols</a> package that gathers common Bloomberg data field symbols, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the <a href="https://bautheac.github.io/pullit/">pullit</a> package. <code>n</code> is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for <code>n</code>.</p>
 </div>
 <div id="store" class="section level2">
 <h2 class="hasAnchor">
 <a href="#store" class="anchor"></a>store</h2>
-<p>storethat provides store methods for all objects returned by the pullit package. Retrieve data from Bloomberg using pullit and store it in an existing storethat database using:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://bautheac.github.io/pullit">pullit</a></span>)
+<p><a href="https://bautheac.github.io/storethat/">storethat</a> provides store methods for all objects returned by the <a href="https://bautheac.github.io/pullit/">pullit</a> package. Retrieve data from Bloomberg using <a href="https://bautheac.github.io/pullit/">pullit</a> and store it in an existing <a href="https://bautheac.github.io/storethat/">storethat</a> database using:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bautheac.github.io/pullit">pullit</a></span><span class="op">)</span>
 
-<span class="kw">storethat</span> <span class="op">&lt;-</span> <span class="st">"../data-raw/storethat.sqlite"</span>; <span class="kw">end</span> <span class="op">&lt;-</span> <span class="st">"2018-12-31"</span>; <span class="kw">start</span> <span class="op">&lt;-</span> <span class="st">"2016-01-01"</span>
-<span class="kw">tickers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"BP/ LN Equity"</span>, <span class="st">"WEIR LN Equity"</span>, <span class="st">"AAPL US Equity"</span>, <span class="st">"RNO FP Equity"</span>)
-<span class="kw">equity_market</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://bautheac.github.io/pullit/reference/pull_equity_market.html">pull_equity_market</a></span>(source = <span class="st">"Bloomberg"</span>, <span class="kw">tickers</span>, <span class="kw">start</span>, <span class="kw">end</span>, verbose = <span class="kw">F</span>, file = <span class="kw">storethat</span>)
+<span class="va">storethat</span> <span class="op">&lt;-</span> <span class="st">"~/data/storethat.sqlite"</span>; <span class="va">end</span> <span class="op">&lt;-</span> <span class="st">"2018-09-30"</span>; <span class="va">start</span> <span class="op">&lt;-</span> <span class="st">"2016-01-01"</span>
+<span class="va">tickers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"BP/ LN Equity"</span>, <span class="st">"WEIR LN Equity"</span>, <span class="st">"AAPL US Equity"</span>, <span class="st">"RNO FP Equity"</span><span class="op">)</span>
+<span class="va">equity_market</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://bautheac.github.io/pullit/reference/pull_equity_market.html">pull_equity_market</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"Bloomberg"</span>, <span class="va">tickers</span>, <span class="va">start</span>, <span class="va">end</span>, verbose <span class="op">=</span> <span class="cn">F</span>, file <span class="op">=</span> <span class="va">storethat</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/db_store.html">db_store</a></span>(<span class="kw">equity_market</span>)
-</pre></div>
+<span class="fu"><a href="../reference/db_store.html">db_store</a></span><span class="op">(</span><span class="va">equity_market</span>, file <span class="op">=</span> <span class="va">storethat</span><span class="op">)</span></code></pre></div>
+<pre><code>#&gt; ✔ Period 2016-01-04/2016-01-07 done.
+#&gt; ✔ Period 2016-01-08/2016-03-04 done.
+#&gt; ✔ Period 2016-03-07/2016-05-02 done.
+#&gt; ✔ Period 2016-05-03/2016-06-29 done.
+#&gt; ✔ Period 2016-06-30/2016-08-26 done.
+#&gt; ✔ Period 2016-08-29/2016-10-21 done.
+#&gt; ✔ Period 2016-10-24/2016-12-20 done.
+#&gt; ✔ Period 2016-12-21/2017-02-16 done.
+#&gt; ✔ Period 2017-02-17/2017-04-13 done.
+#&gt; ✔ Period 2017-04-17/2017-06-12 done.
+#&gt; ✔ Period 2017-06-13/2017-08-09 done.
+#&gt; ✔ Period 2017-08-10/2017-10-06 done.
+#&gt; ✔ Period 2017-10-09/2017-12-01 done.
+#&gt; ✔ Period 2017-12-04/2018-01-30 done.
+#&gt; ✔ Period 2018-01-31/2018-03-29 done.
+#&gt; ✔ Period 2018-04-02/2018-05-25 done.
+#&gt; ✔ Period 2018-05-28/2018-07-23 done.
+#&gt; ✔ Period 2018-07-24/2018-09-19 done.
+#&gt; ✔ Period 2018-09-20/2018-09-28 done.</code></pre>
 </div>
 <div id="whats-in-there" class="section level2">
 <h2 class="hasAnchor">
 <a href="#whats-in-there" class="anchor"></a>what’s in there</h2>
 <p>Check the content of an existing storethat database at anytime with:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="../reference/db_snapshot.html">db_snapshot</a></span>(file = <span class="kw">storethat</span>, instrument = <span class="st">"equity"</span>, book = <span class="st">"market"</span>, name = <span class="st">"RNO FP Equity"</span>)
-<span class="co">#&gt; # A tibble: 10 x 4</span>
-<span class="co">#&gt;    ticker        field       start      end       </span>
-<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span>
-<span class="co">#&gt;  1 RNO FP Equity PX_OPEN     2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  2 RNO FP Equity PX_HIGH     2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  3 RNO FP Equity PX_LOW      2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  4 RNO FP Equity PX_LAST     2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  5 RNO FP Equity PX_VOLUME   2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  6 RNO FP Equity PX_BID      2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  7 RNO FP Equity PX_ASK      2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  8 RNO FP Equity PX_MID      2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  9 RNO FP Equity EQY_SH_OUT  2010-01-04 2018-09-28</span>
-<span class="co">#&gt; 10 RNO FP Equity CUR_MKT_CAP 2010-01-04 2018-09-28</span>
-</pre></div>
-<p>For a broader perspective use:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="../reference/db_snapshot.html">db_snapshot</a></span>(file = <span class="kw">storethat</span>, instrument = <span class="st">"equity"</span>, book = <span class="st">"market"</span>)
-<span class="co">#&gt; # A tibble: 40 x 4</span>
-<span class="co">#&gt;    ticker        field       start      end       </span>
-<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span>
-<span class="co">#&gt;  1 BP/ LN Equity PX_OPEN     2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  2 BP/ LN Equity PX_HIGH     2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  3 BP/ LN Equity PX_LOW      2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  4 BP/ LN Equity PX_LAST     2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  5 BP/ LN Equity PX_VOLUME   2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  6 BP/ LN Equity PX_BID      2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  7 BP/ LN Equity PX_ASK      2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  8 BP/ LN Equity PX_MID      2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  9 BP/ LN Equity EQY_SH_OUT  2000-01-04 2018-09-28</span>
-<span class="co">#&gt; 10 BP/ LN Equity CUR_MKT_CAP 2000-01-04 2018-09-28</span>
-<span class="co">#&gt; # ... with 30 more rows</span>
-</pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/db_snapshot.html">db_snapshot</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">storethat</span>, instrument <span class="op">=</span> <span class="st">"equity"</span>, book <span class="op">=</span> <span class="st">"market"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span>
+<span class="co">#&gt;    instrument   book       field         ticker      start        end</span>
+<span class="co">#&gt; 1:     equity market CUR_MKT_CAP AAPL US Equity 2010-01-04 2018-09-28</span>
+<span class="co">#&gt; 2:     equity market CUR_MKT_CAP  BP/ LN Equity 2000-01-04 2018-09-28</span>
+<span class="co">#&gt; 3:     equity market CUR_MKT_CAP  RNO FP Equity 2010-01-04 2018-09-28</span>
+<span class="co">#&gt; 4:     equity market CUR_MKT_CAP WEIR LN Equity 2000-01-04 2018-09-28</span>
+<span class="co">#&gt; 5:     equity market  EQY_SH_OUT AAPL US Equity 2010-01-04 2018-09-28</span>
+<span class="co">#&gt; 6:     equity market  EQY_SH_OUT  BP/ LN Equity 2000-01-04 2018-09-28</span></code></pre></div>
 </div>
 <div id="update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#update" class="anchor"></a>update</h2>
-<p>Update content in an existing storethat database using pullit:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="https://bautheac.github.io/pullit/reference/storethat_update.html">storethat_update</a></span>(instrument = <span class="st">"equity"</span>, book = <span class="st">"market"</span>, name = <span class="st">"ADM US Equity"</span>, file = <span class="kw">storethat</span>, verbose = <span class="kw">F</span>)
-</pre></div>
+<p>Update content in an existing <a href="https://bautheac.github.io/storethat/">storethat</a> database using <a href="https://bautheac.github.io/pullit/">pullit</a>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://bautheac.github.io/pullit/reference/storethat_update.html">storethat_update</a></span><span class="op">(</span>
+  instrument <span class="op">=</span> <span class="st">"equity"</span>, book <span class="op">=</span> <span class="st">"market"</span>, name <span class="op">=</span> <span class="st">"ADM US Equity"</span>, file <span class="op">=</span> <span class="va">storethat</span>, verbose <span class="op">=</span> <span class="cn">F</span>
+  <span class="op">)</span></code></pre></div>
 <p>Higher order updates are also allowed:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="fu"><a href="https://bautheac.github.io/pullit/reference/storethat_update.html">storethat_update</a></span>(instrument = <span class="st">"equity"</span>, file = <span class="kw">storethat</span>, verbose = <span class="kw">F</span>)
-</pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://bautheac.github.io/pullit/reference/storethat_update.html">storethat_update</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"equity"</span>, file <span class="op">=</span> <span class="va">storethat</span>, verbose <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="delete" class="section level2">
 <h2 class="hasAnchor">
 <a href="#delete" class="anchor"></a>delete</h2>
-<p>Delete any content from an existing storethat database with:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="../reference/db_delete.html">db_delete</a></span>(file = <span class="kw">storethat</span>, instrument = <span class="st">"equity"</span>, book = <span class="st">"market"</span>, name = <span class="st">"ADM US Equity"</span>)
-</pre></div>
-<p>Or delete everyting with:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu"><a href="../reference/db_delete.html">db_delete</a></span>(file = <span class="kw">storethat</span>)
-</pre></div>
+<p>Delete any content from an existing <a href="https://bautheac.github.io/storethat/">storethat</a> database with:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/db_delete.html">db_delete</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">storethat</span>, instrument <span class="op">=</span> <span class="st">"equity"</span>, book <span class="op">=</span> <span class="st">"market"</span>, name <span class="op">=</span> <span class="st">"ADM US Equity"</span><span class="op">)</span></code></pre></div>
+<p>Or delete everything with:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/db_delete.html">db_delete</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">storethat</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
 

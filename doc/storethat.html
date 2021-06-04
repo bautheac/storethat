@@ -4,179 +4,666 @@
 
 <head>
 
-<meta charset="utf-8" />
+<meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="author" content="Olivier Bauthéac" />
-
-<meta name="date" content="2019-03-07" />
-
-<title>storethat</title>
-
-
-
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css" data-origin="pandoc">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-
+<style type="text/css">
+@font-face {
+font-family: octicons-link;
+src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+}
+body {
+-webkit-text-size-adjust: 100%;
+text-size-adjust: 100%;
+color: #333;
+font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+font-size: 16px;
+line-height: 1.6;
+word-wrap: break-word;
+}
+a {
+background-color: transparent;
+}
+a:active,
+a:hover {
+outline: 0;
+}
+strong {
+font-weight: bold;
+}
+h1 {
+font-size: 2em;
+margin: 0.67em 0;
+}
+img {
+border: 0;
+}
+hr {
+box-sizing: content-box;
+height: 0;
+}
+pre {
+overflow: auto;
+}
+code,
+kbd,
+pre {
+font-family: monospace, monospace;
+font-size: 1em;
+}
+input {
+color: inherit;
+font: inherit;
+margin: 0;
+}
+html input[disabled] {
+cursor: default;
+}
+input {
+line-height: normal;
+}
+input[type="checkbox"] {
+box-sizing: border-box;
+padding: 0;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+td,
+th {
+padding: 0;
+}
+* {
+box-sizing: border-box;
+}
+input {
+font: 13px / 1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+a {
+color: #4078c0;
+text-decoration: none;
+}
+a:hover,
+a:active {
+text-decoration: underline;
+}
+hr {
+height: 0;
+margin: 15px 0;
+overflow: hidden;
+background: transparent;
+border: 0;
+border-bottom: 1px solid #ddd;
+}
+hr:before {
+display: table;
+content: "";
+}
+hr:after {
+display: table;
+clear: both;
+content: "";
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 15px;
+margin-bottom: 15px;
+line-height: 1.1;
+}
+h1 {
+font-size: 30px;
+}
+h2 {
+font-size: 21px;
+}
+h3 {
+font-size: 16px;
+}
+h4 {
+font-size: 14px;
+}
+h5 {
+font-size: 12px;
+}
+h6 {
+font-size: 11px;
+}
+blockquote {
+margin: 0;
+}
+ul,
+ol {
+padding: 0;
+margin-top: 0;
+margin-bottom: 0;
+}
+ol ol,
+ul ol {
+list-style-type: lower-roman;
+}
+ul ul ol,
+ul ol ol,
+ol ul ol,
+ol ol ol {
+list-style-type: lower-alpha;
+}
+dd {
+margin-left: 0;
+}
+code {
+font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+font-size: 12px;
+}
+pre {
+margin-top: 0;
+margin-bottom: 0;
+font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.select::-ms-expand {
+opacity: 0;
+}
+.octicon {
+font: normal normal normal 16px/1 octicons-link;
+display: inline-block;
+text-decoration: none;
+text-rendering: auto;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+.octicon-link:before {
+content: '\f05c';
+}
+.markdown-body:before {
+display: table;
+content: "";
+}
+.markdown-body:after {
+display: table;
+clear: both;
+content: "";
+}
+.markdown-body>*:first-child {
+margin-top: 0 !important;
+}
+.markdown-body>*:last-child {
+margin-bottom: 0 !important;
+}
+a:not([href]) {
+color: inherit;
+text-decoration: none;
+}
+.anchor {
+display: inline-block;
+padding-right: 2px;
+margin-left: -18px;
+}
+.anchor:focus {
+outline: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 1em;
+margin-bottom: 16px;
+font-weight: bold;
+line-height: 1.4;
+}
+h1 .octicon-link,
+h2 .octicon-link,
+h3 .octicon-link,
+h4 .octicon-link,
+h5 .octicon-link,
+h6 .octicon-link {
+color: #000;
+vertical-align: middle;
+visibility: hidden;
+}
+h1:hover .anchor,
+h2:hover .anchor,
+h3:hover .anchor,
+h4:hover .anchor,
+h5:hover .anchor,
+h6:hover .anchor {
+text-decoration: none;
+}
+h1:hover .anchor .octicon-link,
+h2:hover .anchor .octicon-link,
+h3:hover .anchor .octicon-link,
+h4:hover .anchor .octicon-link,
+h5:hover .anchor .octicon-link,
+h6:hover .anchor .octicon-link {
+visibility: visible;
+}
+h1 {
+padding-bottom: 0.3em;
+font-size: 2.25em;
+line-height: 1.2;
+border-bottom: 1px solid #eee;
+}
+h1 .anchor {
+line-height: 1;
+}
+h2 {
+padding-bottom: 0.3em;
+font-size: 1.75em;
+line-height: 1.225;
+border-bottom: 1px solid #eee;
+}
+h2 .anchor {
+line-height: 1;
+}
+h3 {
+font-size: 1.5em;
+line-height: 1.43;
+}
+h3 .anchor {
+line-height: 1.2;
+}
+h4 {
+font-size: 1.25em;
+}
+h4 .anchor {
+line-height: 1.2;
+}
+h5 {
+font-size: 1em;
+}
+h5 .anchor {
+line-height: 1.1;
+}
+h6 {
+font-size: 1em;
+color: #777;
+}
+h6 .anchor {
+line-height: 1.1;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table,
+pre {
+margin-top: 0;
+margin-bottom: 16px;
+}
+hr {
+height: 4px;
+padding: 0;
+margin: 16px 0;
+background-color: #e7e7e7;
+border: 0 none;
+}
+ul,
+ol {
+padding-left: 2em;
+}
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+margin-top: 0;
+margin-bottom: 0;
+}
+li>p {
+margin-top: 16px;
+}
+dl {
+padding: 0;
+}
+dl dt {
+padding: 0;
+margin-top: 16px;
+font-size: 1em;
+font-style: italic;
+font-weight: bold;
+}
+dl dd {
+padding: 0 16px;
+margin-bottom: 16px;
+}
+blockquote {
+padding: 0 15px;
+color: #777;
+border-left: 4px solid #ddd;
+}
+blockquote>:first-child {
+margin-top: 0;
+}
+blockquote>:last-child {
+margin-bottom: 0;
+}
+table {
+display: block;
+width: 100%;
+overflow: auto;
+word-break: normal;
+word-break: keep-all;
+}
+table th {
+font-weight: bold;
+}
+table th,
+table td {
+padding: 6px 13px;
+border: 1px solid #ddd;
+}
+table tr {
+background-color: #fff;
+border-top: 1px solid #ccc;
+}
+table tr:nth-child(2n) {
+background-color: #f8f8f8;
+}
+img {
+max-width: 100%;
+box-sizing: content-box;
+background-color: #fff;
+}
+code {
+padding: 0;
+padding-top: 0.2em;
+padding-bottom: 0.2em;
+margin: 0;
+font-size: 85%;
+background-color: rgba(0,0,0,0.04);
+border-radius: 3px;
+}
+code:before,
+code:after {
+letter-spacing: -0.2em;
+content: "\00a0";
+}
+pre>code {
+padding: 0;
+margin: 0;
+font-size: 100%;
+word-break: normal;
+white-space: pre;
+background: transparent;
+border: 0;
+}
+.highlight {
+margin-bottom: 16px;
+}
+.highlight pre,
+pre {
+padding: 16px;
+overflow: auto;
+font-size: 85%;
+line-height: 1.45;
+background-color: #f7f7f7;
+border-radius: 3px;
+}
+.highlight pre {
+margin-bottom: 0;
+word-break: normal;
+}
+pre {
+word-wrap: normal;
+}
+pre code {
+display: inline;
+max-width: initial;
+padding: 0;
+margin: 0;
+overflow: initial;
+line-height: inherit;
+word-wrap: normal;
+background-color: transparent;
+border: 0;
+}
+pre code:before,
+pre code:after {
+content: normal;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font-size: 11px;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.pl-c {
+color: #969896;
+}
+.pl-c1,
+.pl-s .pl-v {
+color: #0086b3;
+}
+.pl-e,
+.pl-en {
+color: #795da3;
+}
+.pl-s .pl-s1,
+.pl-smi {
+color: #333;
+}
+.pl-ent {
+color: #63a35c;
+}
+.pl-k {
+color: #a71d5d;
+}
+.pl-pds,
+.pl-s,
+.pl-s .pl-pse .pl-s1,
+.pl-sr,
+.pl-sr .pl-cce,
+.pl-sr .pl-sra,
+.pl-sr .pl-sre {
+color: #183691;
+}
+.pl-v {
+color: #ed6a43;
+}
+.pl-id {
+color: #b52a1d;
+}
+.pl-ii {
+background-color: #b52a1d;
+color: #f8f8f8;
+}
+.pl-sr .pl-cce {
+color: #63a35c;
+font-weight: bold;
+}
+.pl-ml {
+color: #693a17;
+}
+.pl-mh,
+.pl-mh .pl-en,
+.pl-ms {
+color: #1d3e81;
+font-weight: bold;
+}
+.pl-mq {
+color: #008080;
+}
+.pl-mi {
+color: #333;
+font-style: italic;
+}
+.pl-mb {
+color: #333;
+font-weight: bold;
+}
+.pl-md {
+background-color: #ffecec;
+color: #bd2c00;
+}
+.pl-mi1 {
+background-color: #eaffea;
+color: #55a532;
+}
+.pl-mdr {
+color: #795da3;
+font-weight: bold;
+}
+.pl-mo {
+color: #1d3e81;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.task-list-item {
+list-style-type: none;
+}
+.task-list-item+.task-list-item {
+margin-top: 3px;
+}
+.task-list-item input {
+margin: 0 0.35em 0.25em -1.6em;
+vertical-align: middle;
+}
+:checked+.radio-label {
+z-index: 1;
+position: relative;
+border-color: #4078c0;
+}
+.sourceLine {
+display: inline-block;
+}
+code .kw { color: #000000; }
+code .dt { color: #ed6a43; }
+code .dv { color: #009999; }
+code .bn { color: #009999; }
+code .fl { color: #009999; }
+code .ch { color: #009999; }
+code .st { color: #183691; }
+code .co { color: #969896; }
+code .ot { color: #0086b3; }
+code .al { color: #a61717; }
+code .fu { color: #63a35c; }
+code .er { color: #a61717; background-color: #e3d2d2; }
+code .wa { color: #000000; }
+code .cn { color: #008080; }
+code .sc { color: #008080; }
+code .vs { color: #183691; }
+code .ss { color: #183691; }
+code .im { color: #000000; }
+code .va {color: #008080; }
+code .cf { color: #000000; }
+code .op { color: #000000; }
+code .bu { color: #000000; }
+code .ex { color: #000000; }
+code .pp { color: #999999; }
+code .at { color: #008080; }
+code .do { color: #969896; }
+code .an { color: #008080; }
+code .cv { color: #008080; }
+code .in { color: #008080; }
 </style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
-    }
-  }
-})();
-</script>
-
-
-
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+<style>
+body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+  padding-top: 0px;
+}
+</style>
 
 </head>
 
 <body>
 
+<h1 id="storethat">storethat</h1>
+<p>Olivier Bauthéac</p>
+<style> body {text-align: justify} </style>
 
-
-
-<h1 class="title toc-ignore">storethat</h1>
-<h4 class="author"><em>Olivier Bauthéac</em></h4>
-<h4 class="date"><em>2019-03-07</em></h4>
-
-
-
-<p><a href="https://bautheac.github.io/storethat/">storethat</a> together with <a href="https://bautheac.github.io/pullit/">pullit</a> are the two workhorses of the <a href="https://bautheac.github.io/finRes/">finRes</a> suite. Install the development version with <code>devtools::install_github(&quot;bautheac/storethat&quot;)</code>.<br />
-storethat provides an off-Bloomberg storage facility for financial data retireved from Bloomberg using the pullit package.</p>
-<div id="create" class="section level2">
-<h2>create</h2>
-<p>Start by creating a storethat database wherever suits (defaults to home folder):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(storethat)
-
-<span class="kw">db_create</span>(<span class="dt">path =</span> <span class="st">&quot;../data-raw&quot;</span>, <span class="dt">n =</span> 1L, <span class="dt">verbose =</span> F)</code></pre></div>
-<p>Using the Bloomberg data field symbols provided by the <a href="https://bautheac.github.io/BBGsymbols/">BBGsymbols</a> package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. ‘n’ is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for ‘n’.</p>
-</div>
-<div id="store" class="section level2">
-<h2>store</h2>
-<p>storethat provides store methods for all objects returned by the pullit package. Retrieve data from Bloomberg using pullit and store it in an existing storethat database using:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(pullit)
-
-storethat &lt;-<span class="st"> &quot;../data-raw/storethat.sqlite&quot;</span>; end &lt;-<span class="st"> &quot;2018-12-31&quot;</span>; start &lt;-<span class="st"> &quot;2016-01-01&quot;</span>
-tickers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;BP/ LN Equity&quot;</span>, <span class="st">&quot;WEIR LN Equity&quot;</span>, <span class="st">&quot;AAPL US Equity&quot;</span>, <span class="st">&quot;RNO FP Equity&quot;</span>)
-equity_market &lt;-<span class="st"> </span><span class="kw">pull_equity_market</span>(<span class="dt">source =</span> <span class="st">&quot;Bloomberg&quot;</span>, tickers, start, end, <span class="dt">verbose =</span> F, <span class="dt">file =</span> storethat)
-
-<span class="kw">db_store</span>(equity_market)</code></pre></div>
-</div>
-<div id="whats-in-there" class="section level2">
-<h2>what’s in there</h2>
+<p><a href="https://bautheac.github.io/storethat/">storethat</a> together with <a href="https://bautheac.github.io/pullit/">pullit</a> are the two workhorses for data ETL (extract, transform, load) work in the <a href="https://bautheac.github.io/finRes/">finRes</a> suite. <a href="https://bautheac.github.io/storethat/">storethat</a> provides an off-Bloomberg storage facility for financial data retrieved from Bloomberg using the <a href="https://bautheac.github.io/pullit/">pullit</a> package. The package uses a SQLite database designed for easy and fast I/O (input/output) operations involving <a href="https://bautheac.github.io/pullit/">pullit</a> data objects.<br />
+Install the development version with <code>devtools::install_github(&quot;bautheac/storethat&quot;)</code>.</p>
+<h2 id="create">create</h2>
+<p>Start by creating a <a href="https://bautheac.github.io/storethat/">storethat</a> database wherever suits (defaults to home folder):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(storethat)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">db_create</span>(<span class="dt">path =</span> <span class="st">&quot;~/data/&quot;</span>, <span class="dt">n =</span> 1L, <span class="dt">verbose =</span> F)</span></code></pre></div>
+<p>Using the <code>fields</code> dataset from the <a href="https://bautheac.github.io/BBGsymbols/">BBGsymbols</a> package that gathers common Bloomberg data field symbols, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the <a href="https://bautheac.github.io/pullit/">pullit</a> package. <code>n</code> is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for <code>n</code>.</p>
+<h2 id="store">store</h2>
+<p><a href="https://bautheac.github.io/storethat/">storethat</a> provides store methods for all objects returned by the <a href="https://bautheac.github.io/pullit/">pullit</a> package. Retrieve data from Bloomberg using <a href="https://bautheac.github.io/pullit/">pullit</a> and store it in an existing <a href="https://bautheac.github.io/storethat/">storethat</a> database using:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(pullit)</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>storethat &lt;-<span class="st"> &quot;~/data/storethat.sqlite&quot;</span>; end &lt;-<span class="st"> &quot;2018-09-30&quot;</span>; start &lt;-<span class="st"> &quot;2016-01-01&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>tickers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;BP/ LN Equity&quot;</span>, <span class="st">&quot;WEIR LN Equity&quot;</span>, <span class="st">&quot;AAPL US Equity&quot;</span>, <span class="st">&quot;RNO FP Equity&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5"></a>equity_market &lt;-<span class="st"> </span><span class="kw">pull_equity_market</span>(<span class="dt">source =</span> <span class="st">&quot;Bloomberg&quot;</span>, tickers, start, end, <span class="dt">verbose =</span> F, <span class="dt">file =</span> storethat)</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="kw">db_store</span>(equity_market, <span class="dt">file =</span> storethat)</span></code></pre></div>
+<pre><code>#&gt; ✔ Period 2016-01-04/2016-01-07 done.
+#&gt; ✔ Period 2016-01-08/2016-03-04 done.
+#&gt; ✔ Period 2016-03-07/2016-05-02 done.
+#&gt; ✔ Period 2016-05-03/2016-06-29 done.
+#&gt; ✔ Period 2016-06-30/2016-08-26 done.
+#&gt; ✔ Period 2016-08-29/2016-10-21 done.
+#&gt; ✔ Period 2016-10-24/2016-12-20 done.
+#&gt; ✔ Period 2016-12-21/2017-02-16 done.
+#&gt; ✔ Period 2017-02-17/2017-04-13 done.
+#&gt; ✔ Period 2017-04-17/2017-06-12 done.
+#&gt; ✔ Period 2017-06-13/2017-08-09 done.
+#&gt; ✔ Period 2017-08-10/2017-10-06 done.
+#&gt; ✔ Period 2017-10-09/2017-12-01 done.
+#&gt; ✔ Period 2017-12-04/2018-01-30 done.
+#&gt; ✔ Period 2018-01-31/2018-03-29 done.
+#&gt; ✔ Period 2018-04-02/2018-05-25 done.
+#&gt; ✔ Period 2018-05-28/2018-07-23 done.
+#&gt; ✔ Period 2018-07-24/2018-09-19 done.
+#&gt; ✔ Period 2018-09-20/2018-09-28 done.
+</code></pre>
+<h2 id="whats-in-there">what’s in there</h2>
 <p>Check the content of an existing storethat database at anytime with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">db_snapshot</span>(<span class="dt">file =</span> storethat, <span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;RNO FP Equity&quot;</span>)
-<span class="co">#&gt; # A tibble: 10 x 4</span>
-<span class="co">#&gt;    ticker        field       start      end       </span>
-<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span>
-<span class="co">#&gt;  1 RNO FP Equity PX_OPEN     2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  2 RNO FP Equity PX_HIGH     2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  3 RNO FP Equity PX_LOW      2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  4 RNO FP Equity PX_LAST     2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  5 RNO FP Equity PX_VOLUME   2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  6 RNO FP Equity PX_BID      2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  7 RNO FP Equity PX_ASK      2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  8 RNO FP Equity PX_MID      2010-01-04 2018-09-28</span>
-<span class="co">#&gt;  9 RNO FP Equity EQY_SH_OUT  2010-01-04 2018-09-28</span>
-<span class="co">#&gt; 10 RNO FP Equity CUR_MKT_CAP 2010-01-04 2018-09-28</span></code></pre></div>
-<p>For a broader perspective use:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">db_snapshot</span>(<span class="dt">file =</span> storethat, <span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>)
-<span class="co">#&gt; # A tibble: 40 x 4</span>
-<span class="co">#&gt;    ticker        field       start      end       </span>
-<span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;     </span>
-<span class="co">#&gt;  1 BP/ LN Equity PX_OPEN     2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  2 BP/ LN Equity PX_HIGH     2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  3 BP/ LN Equity PX_LOW      2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  4 BP/ LN Equity PX_LAST     2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  5 BP/ LN Equity PX_VOLUME   2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  6 BP/ LN Equity PX_BID      2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  7 BP/ LN Equity PX_ASK      2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  8 BP/ LN Equity PX_MID      2000-01-04 2018-09-28</span>
-<span class="co">#&gt;  9 BP/ LN Equity EQY_SH_OUT  2000-01-04 2018-09-28</span>
-<span class="co">#&gt; 10 BP/ LN Equity CUR_MKT_CAP 2000-01-04 2018-09-28</span>
-<span class="co">#&gt; # … with 30 more rows</span></code></pre></div>
-</div>
-<div id="update" class="section level2">
-<h2>update</h2>
-<p>Update content in an existing storethat database using pullit:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">storethat_update</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;ADM US Equity&quot;</span>, <span class="dt">file =</span> storethat, <span class="dt">verbose =</span> F)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>snapshot &lt;-<span class="st"> </span><span class="kw">db_snapshot</span>(<span class="dt">file =</span> storethat, <span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">head</span>(snapshot)</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt;    instrument   book       field         ticker      start        end</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt; 1:     equity market CUR_MKT_CAP AAPL US Equity 2010-01-04 2018-09-28</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt; 2:     equity market CUR_MKT_CAP  BP/ LN Equity 2000-01-04 2018-09-28</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt; 3:     equity market CUR_MKT_CAP  RNO FP Equity 2010-01-04 2018-09-28</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt; 4:     equity market CUR_MKT_CAP WEIR LN Equity 2000-01-04 2018-09-28</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; 5:     equity market  EQY_SH_OUT AAPL US Equity 2010-01-04 2018-09-28</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt; 6:     equity market  EQY_SH_OUT  BP/ LN Equity 2000-01-04 2018-09-28</span></span></code></pre></div>
+<h2 id="update">update</h2>
+<p>Update content in an existing <a href="https://bautheac.github.io/storethat/">storethat</a> database using <a href="https://bautheac.github.io/pullit/">pullit</a>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">storethat_update</span>(</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;ADM US Equity&quot;</span>, <span class="dt">file =</span> storethat, <span class="dt">verbose =</span> F</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  )</span></code></pre></div>
 <p>Higher order updates are also allowed:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">storethat_update</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">file =</span> storethat, <span class="dt">verbose =</span> F)</code></pre></div>
-</div>
-<div id="delete" class="section level2">
-<h2>delete</h2>
-<p>Delete any content from an existing storethat database with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">db_delete</span>(<span class="dt">file =</span> storethat, <span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;ADM US Equity&quot;</span>)</code></pre></div>
-<p>Or delete everyting with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">db_delete</span>(<span class="dt">file =</span> storethat)</code></pre></div>
-</div>
-
-
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">storethat_update</span>(<span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">file =</span> storethat, <span class="dt">verbose =</span> F)</span></code></pre></div>
+<h2 id="delete">delete</h2>
+<p>Delete any content from an existing <a href="https://bautheac.github.io/storethat/">storethat</a> database with:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">db_delete</span>(<span class="dt">file =</span> storethat, <span class="dt">instrument =</span> <span class="st">&quot;equity&quot;</span>, <span class="dt">book =</span> <span class="st">&quot;market&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;ADM US Equity&quot;</span>)</span></code></pre></div>
+<p>Or delete everything with:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">db_delete</span>(<span class="dt">file =</span> storethat)</span></code></pre></div>
 
 </body>
 </html>

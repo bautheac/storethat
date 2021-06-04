@@ -191,9 +191,8 @@ setMethod("db_store", signature = c(object = "FuturesInfo"), function(object, fi
   date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
   date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
 
-  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, field, value) %>%
-    dplyr::mutate(field = as.character(field)) %>%
-    dplyr::left_join(fields, by = c("field" = "symbol")) %>% dplyr::select(ticker_id, field_id = id, value) %>%
+  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, symbol, value) %>%
+    dplyr::left_join(fields, by = "symbol") %>% dplyr::select(ticker_id, field_id = id, value) %>%
     dplyr::mutate(date_id = !! date_id) %>% dplyr::select(ticker_id, field_id, date_id, value)
 
   RSQLite::dbWriteTable(con = con, "data_futures_info", query, row.names = FALSE, overwrite = FALSE, append = TRUE)
@@ -339,9 +338,9 @@ setMethod("db_store", signature = c(object = "EquityInfo"), function(object, fil
                   ");")
   RSQLite::dbExecute(con = con, query)
 
-  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, field, value) %>%
-    dplyr::mutate(field = as.character(field)) %>%
-    dplyr::left_join(fields, by = c("field" = "symbol")) %>% dplyr::select(ticker_id, field_id = id, value) %>%
+  # browser()
+  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, symbol, value) %>%
+    dplyr::left_join(fields, by = "symbol") %>% dplyr::select(ticker_id, field_id = id, value) %>%
     dplyr::mutate(date_id = !! date_id) %>% dplyr::select(ticker_id, field_id, date_id, value)
 
   RSQLite::dbWriteTable(con = con, "data_equity_info", query, row.names = FALSE, overwrite = FALSE, append = TRUE)
@@ -441,9 +440,8 @@ setMethod("db_store", signature = c(object = "FundInfo"), function(object, file)
                   ");")
   RSQLite::dbExecute(con = con, query)
 
-  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, field, value) %>%
-    dplyr::mutate(field = as.character(field)) %>%
-    dplyr::left_join(fields, by = c("field" = "symbol")) %>% dplyr::select(ticker_id, field_id = id, value) %>%
+  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, symbol, value) %>%
+    dplyr::left_join(fields, by = "symbol") %>% dplyr::select(ticker_id, field_id = id, value) %>%
     dplyr::mutate(date_id = !! date_id) %>% dplyr::select(ticker_id, field_id, date_id, value)
 
   RSQLite::dbWriteTable(con = con, "data_fund_info", query, row.names = FALSE, overwrite = FALSE, append = TRUE)
@@ -541,9 +539,8 @@ setMethod("db_store", signature = c(object = "IndexInfo"), function(object, file
                   ");")
   RSQLite::dbExecute(con = con, query)
 
-  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, field, value) %>%
-    dplyr::mutate(field = as.character(field)) %>%
-    dplyr::left_join(fields, by = c("field" = "symbol")) %>% dplyr::select(ticker_id, field_id = id, value) %>%
+  query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, symbol, value) %>%
+    dplyr::left_join(fields, by = "symbol") %>% dplyr::select(ticker_id, field_id = id, value) %>%
     dplyr::mutate(date_id = !! date_id) %>% dplyr::select(ticker_id, field_id, date_id, value)
 
   RSQLite::dbWriteTable(con = con, "data_index_info", query, row.names = FALSE, overwrite = FALSE, append = TRUE)

@@ -1,8 +1,8 @@
 ---
 title: storethat
 author: Olivier Bauthéac
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+date: ""
+output: github_document
 vignette: >
   %\VignetteIndexEntry{storethat}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,68 +11,75 @@ vignette: >
 
 ```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
 library(storethat)
-knitr::opts_chunk$set(collapse = T, eval = F, comment = "#>")
+knitr::opts_chunk$set(collapse = T, eval = T, comment = "#>")
 ```
 
-[storethat](https://bautheac.github.io/storethat/) together with [pullit](https://bautheac.github.io/pullit/) are the two workhorses of the [finRes](https://bautheac.github.io/finRes/) suite. Install the development version with `devtools::install_github("bautheac/storethat")`.  
-storethat provides an off-Bloomberg storage facility for financial data retireved from Bloomberg using the pullit package.
+<style> body {text-align: justify} </style>
+
+[storethat](https://bautheac.github.io/storethat/) together with [pullit](https://bautheac.github.io/pullit/) are the two workhorses for data ETL (extract, transform, load) work in the [finRes](https://bautheac.github.io/finRes/) suite. [storethat](https://bautheac.github.io/storethat/) provides an off-Bloomberg storage facility for financial data retrieved from Bloomberg using the [pullit](https://bautheac.github.io/pullit/) package. The package uses a SQLite database designed for easy and fast I/O (input/output) operations involving [pullit](https://bautheac.github.io/pullit/) data objects.  
+Install the development version with `devtools::install_github("bautheac/storethat")`.  
+
 
 
 ## create
-Start by creating a storethat database wherever suits (defaults to home folder):
-```{r create}
+Start by creating a [storethat](https://bautheac.github.io/storethat/) database wherever suits (defaults to home folder):
+```{r create, eval = F}
 library(storethat)
 
-db_create(path = "../data-raw", n = 1L, verbose = F)
+db_create(path = "~/data/", n = 1L, verbose = F)
 ```
 
-Using the Bloomberg data field symbols provided by the [BBGsymbols](https://bautheac.github.io/BBGsymbols/) package, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the pullit package. 'n' is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for 'n'.
+Using the `fields` dataset from the [BBGsymbols](https://bautheac.github.io/BBGsymbols/) package that gathers common Bloomberg data field symbols, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the [pullit](https://bautheac.github.io/pullit/) package. `n` is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for `n`.
 
 
 ## store
-storethat provides store methods for all objects returned by the pullit package. Retrieve data from Bloomberg using pullit and store it in an existing storethat database using:
-```{r store}
+[storethat](https://bautheac.github.io/storethat/) provides store methods for all objects returned by the [pullit](https://bautheac.github.io/pullit/) package. Retrieve data from Bloomberg using [pullit](https://bautheac.github.io/pullit/) and store it in an existing [storethat](https://bautheac.github.io/storethat/) database using:
+```{r `store bbg`, eval = F}
 library(pullit)
 
-storethat <- "../data-raw/storethat.sqlite"; end <- "2018-12-31"; start <- "2016-01-01"
+storethat <- "~/data/storethat.sqlite"; end <- "2018-09-30"; start <- "2016-01-01"
 tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
 equity_market <- pull_equity_market(source = "Bloomberg", tickers, start, end, verbose = F, file = storethat)
 
-db_store(equity_market)
+db_store(equity_market, file = storethat)
 ```
+```{r `store storethat`, eval = T, echo = F}
+library(pullit)
 
+storethat <- here::here("data-raw", "storethat.sqlite"); end <- "2018-09-30"; start <- "2016-01-01"
+tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
+equity_market <- pull_equity_market(source = "storethat", tickers, start, end, verbose = F, file = storethat)
+
+db_store(equity_market, file = storethat)
+```
 
 ## what's in there
 Check the content of an existing storethat database at anytime with:
-```{r, eval = TRUE, echo = F}
-storethat <- "../data-raw/storethat.sqlite"
-```
 ```{r `check one`, eval = TRUE}
-db_snapshot(file = storethat, instrument = "equity", book = "market", name = "RNO FP Equity")
-```
-For a broader perspective use:
-```{r `check all`, eval = TRUE}
-db_snapshot(file = storethat, instrument = "equity", book = "market")
+snapshot <- db_snapshot(file = storethat, instrument = "equity", book = "market")
+head(snapshot)
 ```
 
 
 ## update
-Update content in an existing storethat database using pullit:
-```{r `update one`}
-storethat_update(instrument = "equity", book = "market", name = "ADM US Equity", file = storethat, verbose = F)
+Update content in an existing [storethat](https://bautheac.github.io/storethat/) database using [pullit](https://bautheac.github.io/pullit/):
+```{r `update one`, eval = F}
+storethat_update(
+  instrument = "equity", book = "market", name = "ADM US Equity", file = storethat, verbose = F
+  )
 ```
 Higher order updates are also allowed:
-```{r `update all`}
+```{r `update all`, eval = F}
 storethat_update(instrument = "equity", file = storethat, verbose = F)
 ```
 
 
 ## delete
-Delete any content from an existing storethat database with:
-```{r `delete one`}
+Delete any content from an existing [storethat](https://bautheac.github.io/storethat/) database with:
+```{r `delete one`, eval = F}
 db_delete(file = storethat, instrument = "equity", book = "market", name = "ADM US Equity")
 ```
-Or delete everyting with:
-```{r `delete all`}
+Or delete everything with:
+```{r `delete all`, eval = F}
 db_delete(file = storethat)
 ```
