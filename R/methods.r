@@ -27,9 +27,9 @@ setMethod("db_store", signature = c(object = "FuturesTS"), function(object, file
   fields <- "SELECT id, instrument, book, type, symbol FROM support_fields WHERE instrument = 'futures' AND book = 'market' AND type = 'term structure';"
   fields <- RSQLite::dbGetQuery(con = con, fields)
 
-  if (! all_tickers_exist(tickers = unique(object@active_contract_tickers$`active contract ticker`),
+  if (! all_tickers_exist(tickers = unique(object@active_contract_tickers$ticker),
                           table_tickers = "tickers_futures", con))
-    update_tickers(tickers = unique(object@active_contract_tickers$`active contract ticker`), table_tickers = "tickers_futures", con)
+    update_tickers(tickers = unique(object@active_contract_tickers$ticker), table_tickers = "tickers_futures", con)
   active_contract_tickers <- RSQLite::dbReadTable(con, "tickers_futures")
 
   if (! all_tickers_exist(tickers = unique(object@term_structure_tickers$ticker),
@@ -189,7 +189,7 @@ setMethod("db_store", signature = c(object = "FuturesInfo"), function(object, fi
   RSQLite::dbExecute(con = con, query)
 
   date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
+  date_id <- as.character(RSQLite::dbGetQuery(con, date_id)$id)
 
   query <- dplyr::left_join(object@info, tickers, by = "ticker") %>% dplyr::select(ticker_id = id, symbol, value) %>%
     dplyr::left_join(fields, by = "symbol") %>% dplyr::select(ticker_id, field_id = id, value) %>%
@@ -331,7 +331,7 @@ setMethod("db_store", signature = c(object = "EquityInfo"), function(object, fil
   tickers <- RSQLite::dbReadTable(con, "tickers_equity")
 
   date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
+  date_id <- as.character(RSQLite::dbGetQuery(con, date_id)$id)
 
   query <- paste0("DELETE FROM data_equity_info WHERE ticker_id IN (",
                   paste(dplyr::filter(tickers, ticker %in% unique(object@info$ticker))$id, collapse = ", "),
@@ -433,7 +433,7 @@ setMethod("db_store", signature = c(object = "FundInfo"), function(object, file)
 
 
   date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
+  date_id <- as.character(RSQLite::dbGetQuery(con, date_id)$id)
 
   query <- paste0("DELETE FROM data_fund_info WHERE ticker_id IN (",
                   paste(dplyr::filter(tickers, ticker %in% unique(object@info$ticker))$id, collapse = ", "),
@@ -532,7 +532,7 @@ setMethod("db_store", signature = c(object = "IndexInfo"), function(object, file
 
 
   date_id <- paste0("SELECT id from support_dates WHERE date = '", as.character(Sys.Date()), "';")
-  date_id <- RSQLite::dbGetQuery(con, date_id) %>% purrr::flatten_chr()
+  date_id <- as.character(RSQLite::dbGetQuery(con, date_id)$id)
 
   query <- paste0("DELETE FROM data_index_info WHERE ticker_id IN (",
                   paste(dplyr::filter(tickers, ticker %in% unique(object@info$ticker))$id, collapse = ", "),
