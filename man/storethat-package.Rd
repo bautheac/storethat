@@ -11,7 +11,7 @@ Store Bloomberg financial data for off-Bloomberg consumption in R.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://bautheac.github.io/storethat}
+  \item \url{https://dev.bautheac.net/storethat}
   \item Report bugs at \url{https://github.com/bautheac/storethat/issues}
 }
 
