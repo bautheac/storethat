@@ -37,7 +37,7 @@ Using the `fields` dataset from the [BBGsymbols](https://dev.bautheac.net/BBGsym
 ```{r `store bbg`, eval = F}
 library(pullit)
 
-storethat <- "~/data/storethat.sqlite"; end <- "2018-09-30"; start <- "2016-01-01"
+storethat <- "~/data/storethat.sqlite"; end <- "2026-11-13"; start <- "2024-11-01"
 tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
 equity_market <- pull_equity_market(source = "Bloomberg", tickers, start, end, verbose = F, file = storethat)
 
@@ -46,9 +46,12 @@ db_store(equity_market, file = storethat)
 ```{r `store storethat`, eval = T, echo = F}
 library(pullit)
 
-storethat <- here::here("data-raw", "storethat.sqlite"); end <- "2018-09-30"; start <- "2016-01-01"
+# The synthetic database that ships with pullit stands in for Bloomberg.
+synthetic <- system.file("extdata", "storethat.sqlite", package = "pullit")
+db_create(path = tempdir(), n = 1L, verbose = F)
+storethat <- file.path(tempdir(), "storethat.sqlite"); end <- "2026-11-13"; start <- "2024-11-01"
 tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
-equity_market <- pull_equity_market(source = "storethat", tickers, start, end, verbose = F, file = storethat)
+equity_market <- pull_equity_market(source = "storethat", tickers, start, end, verbose = F, file = synthetic)
 
 db_store(equity_market, file = storethat)
 ```
