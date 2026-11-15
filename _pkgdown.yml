@@ -22,6 +22,18 @@ reference:
   - title: delete
     contents:
       - db_delete
+  - title: update
+    contents:
+      - update_data
+      - update_data_cftc
+      - update_fields
+      - update_tickers
+      - update_cftc_tickers
+      - update_term_structure_tickers
+  - title: check
+    contents:
+      - all_fields_exist
+      - all_tickers_exist
 
 navbar:
   title: ~
