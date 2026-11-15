@@ -48,6 +48,11 @@ library(pullit)
 
 # The synthetic database that ships with pullit stands in for Bloomberg.
 synthetic <- system.file("extdata", "storethat.sqlite", package = "pullit")
+if (! nzchar(synthetic)) stop(
+  "pullit's synthetic database is missing. pullit is installed at ", find.package("pullit"),
+  " with: ", paste(list.files(find.package("pullit")), collapse = ", "),
+  ". Library paths: ", paste(.libPaths(), collapse = ", "), "."
+)
 db_create(path = tempdir(), n = 1L, verbose = F)
 storethat <- file.path(tempdir(), "storethat.sqlite"); end <- "2026-11-13"; start <- "2024-11-01"
 tickers <- c("BP/ LN Equity", "WEIR LN Equity", "AAPL US Equity", "RNO FP Equity")
