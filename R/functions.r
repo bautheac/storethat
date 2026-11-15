@@ -1,9 +1,9 @@
 #' Creates a bespoke SQLite database for the
-#'   \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} suite
+#'   \href{https://dev.bautheac.net/finRes/}{\pkg{finRes}} suite
 #'
 #'
 #' @description Creates a SQLite database bespoke to the
-#'   \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} universe. In
+#'   \href{https://dev.bautheac.net/finRes/}{\pkg{finRes}} universe. In
 #'   particular, the database is designed to store Bloomberg data retrieved
 #'   using the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}} package.
 #'
@@ -21,12 +21,12 @@
 #'
 #'
 #' @details Creates a SQLite database bespoke for use within the
-#'   \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} suite context.
+#'   \href{https://dev.bautheac.net/finRes/}{\pkg{finRes}} suite context.
 #'   The database is created in the destination directory specified in
 #'   \code{path}. Populate with \code{\link{db_store}}.
 #'
 #'
-#' @seealso The \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} suite,
+#' @seealso The \href{https://dev.bautheac.net/finRes/}{\pkg{finRes}} suite,
 #'   in particular the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}},
 #'   \href{https://github.com/bautheac/BBGsymbols/}{\pkg{BBGsymbols}},
 #'   \href{https://github.com/bautheac/fewISOs/}{\pkg{fewISOs}},
@@ -538,7 +538,7 @@ db_create <- function(path = NULL,
 #'   names available for the given instrument.
 #'
 #'
-#' @seealso The \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} suite,
+#' @seealso The \href{https://dev.bautheac.net/finRes/}{\pkg{finRes}} suite,
 #'   in particular the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}}
 #'   & \href{https://github.com/bautheac/BBGsymbols/}{\pkg{BBGsymbols}} packages.
 #'
@@ -928,7 +928,7 @@ db_snapshot <- function(file = NULL,
 #'   a given instrument and book.
 #'
 #'
-#' @seealso The \href{https://bautheac.github.io/finRes/}{\pkg{finRes}} suite,
+#' @seealso The \href{https://dev.bautheac.net/finRes/}{\pkg{finRes}} suite,
 #'   in particular the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}}
 #'   & \href{https://github.com/bautheac/BBGsymbols/}{\pkg{BBGsymbols}} packages.
 #'

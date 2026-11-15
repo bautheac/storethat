@@ -65,7 +65,7 @@ file.}
 Stores in a bespoke \href{https://github.com/bautheac/storethat/}{\pkg{storethat}}
   SQLite database financial data retrieved from Bloomberg
   using the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}} package
-  (\href{https://bautheac.github.io/finRes/}{\pkg{finRes}}) suite.
+  (\href{https://dev.bautheac.net/finRes/}{\pkg{finRes}}) suite.
 }
 \seealso{
 The \href{https://github.com/bautheac/pullit/}{\pkg{pullit}} package.

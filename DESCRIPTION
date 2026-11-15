@@ -33,6 +33,6 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-URL: https://bautheac.github.io/storethat
+URL: https://dev.bautheac.net/storethat
 BugReports: https://github.com/bautheac/storethat/issues
 VignetteBuilder: knitr

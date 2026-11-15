@@ -16,24 +16,24 @@ knitr::opts_chunk$set(collapse = T, eval = T, comment = "#>")
 
 <style> body {text-align: justify} </style>
 
-[storethat](https://bautheac.github.io/storethat/) together with [pullit](https://bautheac.github.io/pullit/) are the two workhorses for data ETL (extract, transform, load) work in the [finRes](https://bautheac.github.io/finRes/) suite. [storethat](https://bautheac.github.io/storethat/) provides an off-Bloomberg storage facility for financial data retrieved from Bloomberg using the [pullit](https://bautheac.github.io/pullit/) package. The package uses a SQLite database designed for easy and fast I/O (input/output) operations involving [pullit](https://bautheac.github.io/pullit/) data objects.  
+[storethat](https://dev.bautheac.net/storethat/) together with [pullit](https://dev.bautheac.net/pullit/) are the two workhorses for data ETL (extract, transform, load) work in the [finRes](https://dev.bautheac.net/finRes/) suite. [storethat](https://dev.bautheac.net/storethat/) provides an off-Bloomberg storage facility for financial data retrieved from Bloomberg using the [pullit](https://dev.bautheac.net/pullit/) package. The package uses a SQLite database designed for easy and fast I/O (input/output) operations involving [pullit](https://dev.bautheac.net/pullit/) data objects.  
 Install the development version with `devtools::install_github("bautheac/storethat")`.  
 
 
 
 ## create
-Start by creating a [storethat](https://bautheac.github.io/storethat/) database wherever suits (defaults to home folder):
+Start by creating a [storethat](https://dev.bautheac.net/storethat/) database wherever suits (defaults to home folder):
 ```{r create, eval = F}
 library(storethat)
 
 db_create(path = "~/data/", n = 1L, verbose = F)
 ```
 
-Using the `fields` dataset from the [BBGsymbols](https://bautheac.github.io/BBGsymbols/) package that gathers common Bloomberg data field symbols, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the [pullit](https://bautheac.github.io/pullit/) package. `n` is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for `n`.
+Using the `fields` dataset from the [BBGsymbols](https://dev.bautheac.net/BBGsymbols/) package that gathers common Bloomberg data field symbols, the function creates a SQLite database bespoke to host financial data retrieved from Bloomberg using the [pullit](https://dev.bautheac.net/pullit/) package. `n` is a space/speed trade-off parameter; it refers to the number of tables created for hosting historical data for each financial instrument category. Historical data tables are indexed by unique combinations of ticker, field and date ids. Writing new data to a table involves reconstructing its index, a process that continuously increases in strain as the volume of data grows and the index gets bigger; spreading the data across multiple tables helps contain the strain expansion and eventually improves the writing time performance of the database at the expense of disc space. Should disc space be cheaper than time, which is often the case, select a high value for `n`.
 
 
 ## store
-[storethat](https://bautheac.github.io/storethat/) provides store methods for all objects returned by the [pullit](https://bautheac.github.io/pullit/) package. Retrieve data from Bloomberg using [pullit](https://bautheac.github.io/pullit/) and store it in an existing [storethat](https://bautheac.github.io/storethat/) database using:
+[storethat](https://dev.bautheac.net/storethat/) provides store methods for all objects returned by the [pullit](https://dev.bautheac.net/pullit/) package. Retrieve data from Bloomberg using [pullit](https://dev.bautheac.net/pullit/) and store it in an existing [storethat](https://dev.bautheac.net/storethat/) database using:
 ```{r `store bbg`, eval = F}
 library(pullit)
 
@@ -62,7 +62,7 @@ head(snapshot)
 
 
 ## update
-Update content in an existing [storethat](https://bautheac.github.io/storethat/) database using [pullit](https://bautheac.github.io/pullit/):
+Update content in an existing [storethat](https://dev.bautheac.net/storethat/) database using [pullit](https://dev.bautheac.net/pullit/):
 ```{r `update one`, eval = F}
 storethat_update(
   instrument = "equity", book = "market", name = "ADM US Equity", file = storethat, verbose = F
@@ -75,7 +75,7 @@ storethat_update(instrument = "equity", file = storethat, verbose = F)
 
 
 ## delete
-Delete any content from an existing [storethat](https://bautheac.github.io/storethat/) database with:
+Delete any content from an existing [storethat](https://dev.bautheac.net/storethat/) database with:
 ```{r `delete one`, eval = F}
 db_delete(file = storethat, instrument = "equity", book = "market", name = "ADM US Equity")
 ```

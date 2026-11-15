@@ -19,7 +19,7 @@ setOldClass(c("tbl_df", "tbl", "data.frame"))
 #' @description Stores in a bespoke \href{https://github.com/bautheac/storethat/}{\pkg{storethat}}
 #'   SQLite database financial data retrieved from Bloomberg
 #'   using the \href{https://github.com/bautheac/pullit/}{\pkg{pullit}} package
-#'   (\href{https://bautheac.github.io/finRes/}{\pkg{finRes}}) suite.
+#'   (\href{https://dev.bautheac.net/finRes/}{\pkg{finRes}}) suite.
 #'
 #'
 #' @param object an S4 object of class \linkS4class{DataHistorical} or \linkS4class{DataInfo}
